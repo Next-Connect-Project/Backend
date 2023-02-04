@@ -41,7 +41,7 @@ deploy:
     bucket: unigram
     key: unigram-webservice.zip
     bundle_type: zip
-    application: unigram
+    application: unigram-webservice
     deployment_group: unigram-deploy-group
     region: ap-northeast-2
     wait_until_deployed: true
