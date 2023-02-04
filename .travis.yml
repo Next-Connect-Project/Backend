@@ -1,22 +1,17 @@
 language: java
 jdk:
-  - openjdk11
-
+- openjdk11
 branches:
   only:
-    - master
-
+  - master
 before_install:
-  - chmod +x gradlew
-
-# Travis CI 서버의 Home
+- chmod +x gradlew
 cache:
   directories:
-    - '$HOME/.m2/repository'
-    - '$HOME/.gradle'
-
+  - "$HOME/.m2/repository"
+  - "$HOME/.gradle"
 script: "./gradlew clean build"
-
-# CI 실행 완료 시 메일로 알람
 notifications:
-  slack: 20222clonepro-6bs3004:TegNMuXco3OAGZxPFgkuFsTJ
+  slack:
+    rooms:
+      secure: afMiBuzQ/hjO6QQExmX81Ykscuoi4z2Afd3nGEqhdav/llgztPMPKIHPtUmzCgc6PtD1f3jFRMmxlUDCJAlz+4CVJLCGjSWTvKDEXRQLDuuhpSXlquwbVcOMAlA/Xluqyr4jlz/r1JZHdvJFljR/Umimptn+M9/K9jJTzGYvIGtrM3242scPEZbO/Hpotcm2fqnQGW8RMpFCRsn6Tr+Qji4vY6LVFbWzxrxkOkIb2TLCU4zxJ6R3westxjpO+AxYtAM1A2QfatUHzZ2MHUgWhqCIPxIRTjnoyVfollP+E3rG8roT1iWaq7IdmHCJ/vvioU2ith2hSgHQvoYCYo/6whmwIrchdCzqFGv/+QaEeXyCRwV5w9A+nNhA0W1bq0o1dRqq7IAWhuDdbrPxAyx0aAxgaebwxYXPY32e4zI0m0NjI6OS6SSYOrub1wGCHTF1JfCIe8uy3U4c7GMYtNXiKN8BylXDqbMOn/MAKZ482FuOE/nb2jog3E0+Wih7V+0eKW8z5Y4FZyiKwxqINqv4XTh3+HD/HPEYlk6gMYkkwHvncNSL3Ox2HE7/d81GIQgexwE6Sqgd689SKQ99S1gzw3vYdHcK1bV+FbHa3a+E1pa4HiX3MNFZseym/6i/ucW4xOSYD/EdEKRHzU10EQTTe2GFcfhFqLqswaO7rflkdTQ=
