@@ -13,6 +13,39 @@ cache:
   - "$HOME/.m2/repository"
   - "$HOME/.gradle"
 script: "./gradlew clean build"
+
+# deploy 실행 전 수행
+# CodeDeploy는 jar파일 인식 못하므로 zip파일로 압축한 뒤 전달
+before_deploy:
+  - zip -r unigram-webservice ./*
+  - mkdir -p deploy
+  - mv unigram-webservice.zip deploy/unigram-webservice.zip
+
+# 외부 서비스와 연동될 명령어 정의
+deploy:
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY # Travis settings
+    secret_access_key: $AWS_SECRET_KEY
+
+    bucket: unigram # 버킷 이름
+    region: ap-northeast-2 # AWS 리전
+    skip_cleanup: true
+    acl: private
+    local_dir: deploy     # deploy 위치의 파일만 s3로 전송
+    wait_until_deployed: true
+
+  - provider: codedeploy
+      access_key_id: $AWS_ACCESS_KEY
+      secret_access_key: $AWS_SECRET_KEY
+
+      bucket: unigram
+      key: unigram-webservice.zip
+      bundle_type: zip
+      application: unigram
+      deployment_group: unigram-deploy-group
+      region: ap-northeast-2
+      wait_until_deployed: true
+
 notifications:
   slack:
     rooms:

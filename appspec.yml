@@ -1,0 +1,8 @@
+version: 0.0
+os: linux
+files:
+  - source:  /
+    # EC2 내 소스코드 저장 위치
+    destination: /home/ubuntu/app/zip/
+    # 덮어쓰기 여부
+    overwrite: yes
