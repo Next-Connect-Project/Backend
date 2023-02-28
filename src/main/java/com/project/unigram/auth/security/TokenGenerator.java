@@ -16,7 +16,6 @@ import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 @Component
 public class TokenGenerator {
@@ -25,24 +24,27 @@ public class TokenGenerator {
 	private Long accessExp;
 	private Long refreshExp;
 	
+	// yml 파일에서 가져오기
 	public TokenGenerator(@Value("${jwt.secret}") String key,
-	                      @Value("${access-token-validaity-in-seconds}") String accessExp,
-	                      @Value("${refresh-token-validaity-in-seconds}") String refreshExp) {
+	                      @Value("${jwt.access-token-validaity-in-seconds}") String accessExp,
+	                      @Value("${jwt.refresh-token-validaity-in-seconds}") String refreshExp) {
 		byte[] keyBytes = key.getBytes();
 		this.key = Keys.hmacShaKeyFor(keyBytes);
 		this.accessExp = Long.parseLong(accessExp);
 		this.refreshExp = Long.parseLong(refreshExp);
 	}
-	//
+	// 토큰 생성하기
 	public Token getToken(Long id, Role role) {
 		Date accessExp = getExp(this.accessExp);
 		Date refreshExp = getExp(this.refreshExp);
-		return new Token(id, role, accessExp, refreshExp, key);
+		return Token.initToken(id, role, accessExp, refreshExp, key);
 	}
+	
 	// 유효시간 생성
 	public Date getExp(Long sec) {
 		return new Date(System.currentTimeMillis() + sec);
 	}
+	
 	// 토큰으로부터 권한 객체 가져오기
 	public Authentication getAuthentication(Token token) {
 		Claims claims = token.getClaims(key);
@@ -52,4 +54,5 @@ public class TokenGenerator {
 		
 		return new UsernamePasswordAuthenticationToken(principal, token, authority);
 	}
+	
 }

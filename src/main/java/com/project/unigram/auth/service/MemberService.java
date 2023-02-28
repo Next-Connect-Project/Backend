@@ -1,8 +1,11 @@
 package com.project.unigram.auth.service;
 
 import com.project.unigram.auth.domain.Member;
+import com.project.unigram.auth.domain.Role;
+import com.project.unigram.auth.domain.Token;
 import com.project.unigram.auth.dto.ResponseNaver;
 import com.project.unigram.auth.repository.MemberRepository;
+import com.project.unigram.auth.security.TokenGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -23,9 +26,19 @@ import org.springframework.web.client.RestTemplate;
 public class MemberService {
 
 	private final MemberRepository memberRepository;
+	private final TokenGenerator tokenGenerator;
 	private final RestTemplate restTemplate;
 	
-	public Member getUserInfoFromNaver(String accessToken) {
+	@Transactional
+	public Token getToken(String accessToken) {
+		Member member = getUserInfoFromNaver(accessToken);
+		// 회원가입
+		if (memberRepository.findOne(member.getId()) == null) memberRepository.save(member);
+		Token token = tokenGenerator.getToken(member.getId(), Role.NAVER);
+		return token;
+	}
+	
+	private Member getUserInfoFromNaver(String accessToken) {
 		try {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setBearerAuth(accessToken);
@@ -45,5 +58,7 @@ public class MemberService {
 			throw e;
 		}
 	}
+	
+	
 	
 }

@@ -22,12 +22,14 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		String token = getJWTFromRequest(request);
 		if (StringUtils.hasText(token)) {
-			Token authToken = new Token(token, null);
+			Token authToken = Token.builder()
+				                  .accessToken(token)
+				                  .build();
 			
 			Authentication authentication = tokenGenerator.getAuthentication(authToken);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			
-			filterChain.doFilter(request, response);
+			filterChain.doFilter(request, response); // 다음 필터 수행
 		}
 	}
 	
