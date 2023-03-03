@@ -4,6 +4,7 @@ import com.project.unigram.auth.domain.Role;
 import com.project.unigram.auth.domain.Token;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,11 +19,12 @@ import java.util.Collection;
 import java.util.Date;
 
 @Component
+@Getter
 public class TokenGenerator {
 	
 	private Key key;
-	private Long accessExp;
-	private Long refreshExp;
+	private Date accessExp;
+	private Date refreshExp;
 	
 	// yml 파일에서 가져오기
 	public TokenGenerator(@Value("${jwt.secret}") String key,
@@ -30,19 +32,13 @@ public class TokenGenerator {
 	                      @Value("${jwt.refresh-token-validaity-in-seconds}") String refreshExp) {
 		byte[] keyBytes = key.getBytes();
 		this.key = Keys.hmacShaKeyFor(keyBytes);
-		this.accessExp = Long.parseLong(accessExp);
-		this.refreshExp = Long.parseLong(refreshExp);
+		// 생성할 때부터 Date로 만듦
+		this.accessExp = getExp(Long.parseLong(accessExp));
+		this.refreshExp = getExp(Long.parseLong(refreshExp));
 	}
 	// 토큰 생성하기
 	public Token getToken(Long id, Role role) {
-		Date accessExp = getExp(this.accessExp);
-		Date refreshExp = getExp(this.refreshExp);
 		return Token.initToken(id, role, accessExp, refreshExp, key);
-	}
-	
-	// 유효시간 생성
-	public Date getExp(Long sec) {
-		return new Date(System.currentTimeMillis() + sec);
 	}
 	
 	// 토큰으로부터 권한 객체 가져오기
@@ -53,6 +49,11 @@ public class TokenGenerator {
 		User principal = new User(claims.getSubject(), "", authority);
 		
 		return new UsernamePasswordAuthenticationToken(principal, token, authority);
+	}
+	
+	// 유효시간 생성
+	private Date getExp(Long sec) {
+		return new Date(System.currentTimeMillis() + sec);
 	}
 	
 }

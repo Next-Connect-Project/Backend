@@ -16,4 +16,10 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(responseError, HttpStatus.BAD_REQUEST);
 	}
 	
+	@ExceptionHandler(ServerException.class)
+	public ResponseEntity<ResponseError> serverException(ServerException e) {
+		ResponseError responseError = new ResponseError(500, e.getMessage());
+		return new ResponseEntity<>(responseError, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
 }

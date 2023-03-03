@@ -3,6 +3,7 @@ package com.project.unigram.auth.service;
 import com.project.unigram.auth.domain.Member;
 import com.project.unigram.auth.domain.Role;
 import com.project.unigram.auth.domain.Token;
+import com.project.unigram.auth.dto.NaverMemberDto;
 import com.project.unigram.auth.dto.ResponseNaver;
 import com.project.unigram.auth.repository.MemberRepository;
 import com.project.unigram.auth.security.TokenGenerator;
@@ -34,7 +35,9 @@ public class MemberService {
 		Member member = getUserInfoFromNaver(accessToken);
 		// 회원가입
 		if (memberRepository.findOne(member.getId()) == null) memberRepository.save(member);
+		
 		Token token = tokenGenerator.getToken(member.getId(), Role.NAVER);
+		
 		return token;
 	}
 	
@@ -51,14 +54,18 @@ public class MemberService {
 					}
 			);
 			
-			Member member = res.getBody().getResponse();
+			NaverMemberDto naverMemberDto = res.getBody().getResponse();
+			
+			Member member = Member.builder()
+				                .id(naverMemberDto.getId())
+				                .name(naverMemberDto.getName())
+				                .email(naverMemberDto.getEmail())
+				                .build();
 			
 			return member;
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
 			throw e;
 		}
 	}
-	
-	
 	
 }

@@ -1,6 +1,7 @@
 package com.project.unigram.auth.domain;
 
 import com.project.unigram.auth.exception.TokenInvalidException;
+import com.project.unigram.global.exception.ServerException;
 import io.jsonwebtoken.*;
 ;
 import io.jsonwebtoken.security.SignatureException;
@@ -60,18 +61,18 @@ public class Token {
 		} catch (ExpiredJwtException e) {
 			log.error("에세스 토큰의 유효 기간이 만료되었습니다.");
 			throw new TokenInvalidException("에세스 토큰의 유효 기간이 만료되었습니다.");
-		} catch (SignatureException e) {
-			log.error("에세스 토큰의 서명이 유효하지 않습니다.");
-			throw e;
 		} catch (MalformedJwtException e) {
 			log.error("에세스 토큰이 유효하지 않습니다");
 			throw new TokenInvalidException("에세스 토큰이 유효하지 않습니다.");
-		} catch (UnsupportedJwtException e) {
-			log.error("지원하지 않는 에세스 토큰입니다.");
-			throw e;
 		} catch (IllegalArgumentException e) {
 			log.error("에세스 토큰이 빈 값(null)입니다.");
-			throw e;
+			throw new TokenInvalidException("헤더에 에세스 토큰을 넣어주세요.");
+		} catch (SignatureException e) {
+			log.error("에세스 토큰의 서명이 유효하지 않습니다.");
+			throw new ServerException("에세스 토큰의 서명이 유효하지 않습니다.");
+		}  catch (UnsupportedJwtException e) {
+			log.error("지원하지 않는 에세스 토큰입니다.");
+			throw new ServerException("지원하지 않는 에세스 토큰입니다.");
 		}
 	}
 	
