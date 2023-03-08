@@ -1,6 +1,7 @@
 package com.project.unigram.auth.security;
 
 import com.project.unigram.auth.domain.Token;
+import com.project.unigram.auth.domain.Type;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,11 +23,20 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		String token = getJWTFromRequest(request);
 		if (StringUtils.hasText(token)) {
-			Token authToken = Token.builder()
-				                  .accessToken(token)
-				                  .build();
+			Type type = request.getContextPath().equals("/api/v1/auth/token") ? Type.RTK : Type.ATK;
 			
-			Authentication authentication = tokenGenerator.getAuthentication(authToken);
+			Token authToken = null;
+			if (type == Type.ATK) {
+				authToken = Token.builder()
+							.accessToken(token)
+							.build();
+			} else {
+				authToken = Token.builder()
+							.refreshToken(token)
+							.build();
+			}
+			
+			Authentication authentication = tokenGenerator.getAuthentication(authToken, type);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			
 			filterChain.doFilter(request, response); // 다음 필터 수행

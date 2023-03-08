@@ -4,7 +4,6 @@ import com.project.unigram.auth.exception.TokenInvalidException;
 import com.project.unigram.global.exception.ServerException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,8 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.nio.charset.StandardCharsets;
-import java.rmi.ServerError;
 import java.security.Key;
 import java.util.Date;
 
@@ -47,7 +44,7 @@ public class TokenTest {
 		
 		// when
 		Token token = Token.initToken(member.getId(), Role.NAVER, accessExp, refreshExp, key);
-		Claims claims = token.getClaims(key);
+		Claims claims = token.getClaims(key, Type.ATK);
 		
 		// then
 		assertThat(claims).isNotEmpty();
@@ -61,7 +58,7 @@ public class TokenTest {
 						.build();
 		
 		// when
-		Claims claims = token.getClaims(key);
+		Claims claims = token.getClaims(key, Type.ATK);
 		
 		// then
 		fail("유효하지 않은 토큰 에러 발생");
@@ -76,7 +73,7 @@ public class TokenTest {
 		
 		// when
 		Token token = Token.initToken(member.getId(), Role.NAVER, accessExp, refrehExp, key);
-		Claims claims = token.getClaims(key);
+		Claims claims = token.getClaims(key, Type.ATK);
 	
 		// then
 		fail("에세스 토큰의 기간 만료 에러 발생");
@@ -88,7 +85,7 @@ public class TokenTest {
 		Token token = Token.builder().build();
 		
 		// when
-		Claims claims = token.getClaims(key);
+		Claims claims = token.getClaims(key, Type.ATK);
 	
 		// then
 		fail("에세스 토큰이 비었으면 에러 발생");
@@ -104,7 +101,7 @@ public class TokenTest {
 		
 		// when
 		Token token = Token.initToken(member.getId(), Role.NAVER, accessExp, refreshExp, key);
-		Claims claims = token.getClaims(fakeKey);
+		Claims claims = token.getClaims(fakeKey, Type.ATK);
 		
 		// then
 		fail("서명이 유효하지 않으면 에러 발생");

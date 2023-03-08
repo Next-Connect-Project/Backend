@@ -6,13 +6,10 @@ import com.project.unigram.auth.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -21,7 +18,7 @@ import java.util.Date;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-public class MemberController {
+public class AuthController {
 	
 	private final MemberService memberService;
 	private final TokenGenerator tokenGenerator;
@@ -31,15 +28,19 @@ public class MemberController {
 			notes = "네이버 서버로부터 사용자의 정보를 조회한다."
 	)
 	@PostMapping("/login")
-	public ResponseEntity<TokenDto> login(@RequestBody @Valid RequestAccessToken requestAccessToken) {
+	public TokenDto login(@RequestBody @Valid RequestAccessToken requestAccessToken) {
 		String accessToken = requestAccessToken.getAccessToken();
 		Token token = memberService.getToken(accessToken);
-		Date accessExp = tokenGenerator.getAccessExp();
-		Date refreshExp = tokenGenerator.getRefreshExp();
 		
-		TokenDto tokenDto = new TokenDto(token, accessExp, refreshExp);
+		return new TokenDto(token);
+	}
+	
+	@PreAuthorize("hasRole('RTK')")
+	@GetMapping("/token")
+	public TokenDto reissue() {
+		Token token = memberService.reissueToken();
 		
-		return new ResponseEntity<>(tokenDto, HttpStatus.OK);
+		return new TokenDto(token);
 	}
 	
 	@Data
@@ -55,11 +56,11 @@ public class MemberController {
 		private String refreshToken;
 		private Date refreshExp;
 		
-		public TokenDto(Token t, Date accessExp, Date refreshExp) {
+		public TokenDto(Token t) {
 			this.accessToken = t.getAccessToken();
-			this.accessExp = accessExp;
+			this.accessExp = t.getAccessExp();
 			this.refreshToken = t.getRefreshToken();
-			this.refreshExp = refreshExp;
+			this.refreshExp = t.getRefreshExp();
 		}
 	}
 	

@@ -2,7 +2,6 @@ package com.project.unigram.config;
 
 import com.project.unigram.auth.security.TokenGenerator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,11 +19,12 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
 				.csrf().disable()
+				.sessionManagement().disable()
 				.authorizeRequests()
-				.antMatchers("/api/auth/**").permitAll()
+				.antMatchers("/api/v1/auth/**").permitAll()
 				.anyRequest().authenticated()
 				.and()
-				.httpBasic();
+				.httpBasic().disable();
 		return http.build();
 	}
 
