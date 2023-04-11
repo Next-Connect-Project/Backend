@@ -35,4 +35,5 @@ chmod +x $JAR_NAME
 echo "> $JAR_NAME 실행"
 
 # 설정 파일 path 삭제
-nohup java -jar $JAR_NAME > $REPOSITORY/nohup.out 2>&1 &
+# 운영 환경으로 실행
+nohup java -Dspring.profiles.active=prod -jar $JAR_NAME > $REPOSITORY/nohup.out 2>&1 &

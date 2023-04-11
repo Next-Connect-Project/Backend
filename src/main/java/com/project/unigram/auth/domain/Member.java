@@ -1,8 +1,6 @@
 package com.project.unigram.auth.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,5 +18,15 @@ public class Member {
 	private String name;
 	
 	private String email;
+	
+	private Role role;
+	
+	@Builder // setter를 사용하지 않고 Builder 사용
+	public Member(Long id, String name, String email, Role role) {
+		this.id = id;
+		this.name = name;
+		this.email = email;
+		this.role = role;
+	}
 	
 }

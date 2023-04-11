@@ -1,13 +1,15 @@
 package com.project.unigram;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static org.junit.Assert.*;
+
 @SpringBootTest
-class UnigramApplicationTests {
-
+public class UnigramApplicationTests {
+	
 	@Test
-	void contextLoads() {
+	public void contextLoads() {
 	}
-
+	
 }
