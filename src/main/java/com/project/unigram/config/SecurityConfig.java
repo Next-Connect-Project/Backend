@@ -12,17 +12,16 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-	
+
 	private final TokenGenerator tokenGenerator;
-	
+
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
 				.csrf().disable()
 				.sessionManagement().disable()
 				.authorizeRequests()
-				.antMatchers("/api/v1/auth/**").permitAll()
-				.anyRequest().authenticated()
+				.anyRequest().permitAll()
 				.and()
 				.httpBasic().disable();
 		return http.build();
