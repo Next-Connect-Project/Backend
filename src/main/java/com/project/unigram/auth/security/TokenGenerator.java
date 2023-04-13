@@ -58,7 +58,10 @@ public class TokenGenerator {
 		Claims claims = token.getClaims(key, tokenType);
 		String memberId = claims.getSubject();
 		
-		if (tokenType == Type.RTK) isRightRefreshToken(Long.parseLong(memberId), token.getRefreshToken());
+		// 잘못된 타입의 토큰을 넘겨줬을 때
+		if (!claims.get("Type", String.class).equals(tokenType.toString())) throw new TokenInvalidException("잘못된 타입의 토큰입니다.");
+		
+		// if (tokenType == Type.RTK) isRightRefreshToken(Long.parseLong(memberId), token.getRefreshToken());
 		
 		// 모든 claims 가져와서 List로 만듦
 		Collection<? extends GrantedAuthority> authority = Arrays.stream(claimKeys)

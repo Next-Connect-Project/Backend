@@ -49,11 +49,16 @@ public class MemberService {
 	
 	// 요청 들어올 때마다 항상 재발급
 	public Token reissueToken() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String memberId = authentication.getName();
-		Member member = memberRepository.findOne(Long.parseLong(memberId));
+		Member member = getMember();
 		
 		return generateToken(member.getId(), member.getRole());
+	}
+	
+	// 멤버 정보 가져오기
+	public Member getMember() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String memberId = authentication.getName();
+		return memberRepository.findOne(Long.parseLong(memberId));
 	}
 	
 	private Token generateToken(Long memberId, Role role) {
