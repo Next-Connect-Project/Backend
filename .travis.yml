@@ -6,10 +6,13 @@ branches:
   - master
 before_install:
 - mkdir -p ./src/main/resources
+- mkdir -p ./src/test/resources
 - openssl aes-256-cbc -K $encrypted_1116e8e6e492_key -iv $encrypted_1116e8e6e492_iv
   -in application.yml.enc -out ./src/main/resources/application.yml -d
-- openssl aes-256-cbc -K $encrypted_c27f626e2aa6_key -iv $encrypted_c27f626e2aa6_iv
+- openssl aes-256-cbc -K $encrypted_1116e8e6e492_key -iv $encrypted_1116e8e6e492_iv
   -in application-prod.yml.enc -out ./src/main/resources/application-prod.yml -d
+- openssl aes-256-cbc -K $encrypted_1116e8e6e492_key -iv $encrypted_1116e8e6e492_iv
+  -in application-test.yml.enc -out ./src/test/resources/application.yml -d
 - chmod +x gradlew
 
 cache:
