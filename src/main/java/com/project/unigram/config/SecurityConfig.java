@@ -64,8 +64,8 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		
-		configuration.addAllowedOrigin("*");
+		// 스프링 부트 2.4.0부터 allowCredentials가 true일 때 allowedOrigins에 특수 값인 "*" 추가할 수 없음
+		configuration.addAllowedOriginPattern("*");
 		configuration.addAllowedHeader("*");
 		configuration.addAllowedMethod("*");
 		configuration.setAllowCredentials(true);
