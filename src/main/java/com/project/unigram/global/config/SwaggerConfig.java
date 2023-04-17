@@ -1,4 +1,4 @@
-package com.project.unigram.config;
+package com.project.unigram.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
