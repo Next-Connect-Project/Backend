@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.json.ParseException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,16 +26,15 @@ import java.util.Date;
 public class AuthController {
 	
 	private final MemberService memberService;
-	private final TokenGenerator tokenGenerator;
 	
 	@ApiOperation(
 			value = "사용자 정보 조회",
 			notes = "네이버 서버로부터 사용자의 정보를 조회한다."
 	)
 	@PostMapping("/login/naver")
-	public ResponseSuccess login(@RequestBody @Valid RequestAccessToken requestAccessToken) {
-		String accessToken = requestAccessToken.getAccessToken();
-		Token token = memberService.getToken(accessToken);
+	public ResponseSuccess login(@RequestBody @Valid RequestCode requestCode) {
+		String code = requestCode.getCode();
+		Token token = memberService.getToken(code);
 		
 		return new ResponseSuccess(200, "로그인에 성공했습니다.", new TokenDto(token));
 	}
@@ -64,9 +64,9 @@ public class AuthController {
 	}
 	
 	@Data
-	static class RequestAccessToken {
-		@NotEmpty(message = "NOT_EMPTY:네이버로 부터 받은 에세스 토큰을 넣어주세요.")
-		private String accessToken;
+	static class RequestCode {
+		@NotEmpty(message = "NOT_EMPTY:네이버로 부터 받은 인증 코드를 넣어주세요.")
+		private String code;
 	}
 	
 	@Data
