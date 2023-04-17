@@ -1,6 +1,8 @@
 package com.project.unigram.auth.domain;
 
+import com.project.unigram.auth.exception.AuthErrorCode;
 import com.project.unigram.auth.exception.TokenInvalidException;
+import com.project.unigram.global.exception.ServerErrorCode;
 import com.project.unigram.global.exception.ServerException;
 import io.jsonwebtoken.*;
 ;
@@ -71,19 +73,19 @@ public class Token {
 				       .getBody();
 		} catch (ExpiredJwtException e) {
 			log.error("토큰의 유효 기간이 만료되었습니다.");
-			throw new TokenInvalidException("토큰의 유효 기간이 만료되었습니다.");
+			throw new TokenInvalidException("토큰의 유효 기간이 만료되었습니다.", AuthErrorCode.INVALIED_TOKEN);
 		} catch (MalformedJwtException e) {
 			log.error("토큰이 유효하지 않습니다");
-			throw new TokenInvalidException("토큰이 유효하지 않습니다.");
+			throw new TokenInvalidException("토큰이 유효하지 않습니다.", AuthErrorCode.INVALIED_TOKEN);
 		} catch (IllegalArgumentException e) {
 			log.error("토큰이 빈 값(null)입니다.");
-			throw new TokenInvalidException("헤더에 토큰을 넣어주세요.");
+			throw new TokenInvalidException("헤더에 토큰을 넣어주세요.", AuthErrorCode.INVALIED_TOKEN);
 		} catch (SignatureException e) {
 			log.error("토큰의 서명이 유효하지 않습니다.");
-			throw new ServerException("토큰의 서명이 유효하지 않습니다.");
+			throw new TokenInvalidException("토큰의 서명이 유효하지 않습니다.", AuthErrorCode.INVALIED_TOKEN);
 		}  catch (UnsupportedJwtException e) {
 			log.error("지원하지 않는 토큰입니다.");
-			throw new ServerException("지원하지 않는 토큰입니다.");
+			throw new TokenInvalidException("지원하지 않는 토큰입니다.", AuthErrorCode.INVALIED_TOKEN);
 		}
 	}
 	

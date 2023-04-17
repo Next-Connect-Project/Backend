@@ -5,6 +5,7 @@ import com.project.unigram.auth.domain.Role;
 import com.project.unigram.auth.domain.Token;
 import com.project.unigram.auth.security.TokenGenerator;
 import com.project.unigram.auth.service.MemberService;
+import com.project.unigram.global.dto.ResponseSuccess;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,11 +32,11 @@ public class AuthController {
 			notes = "네이버 서버로부터 사용자의 정보를 조회한다."
 	)
 	@PostMapping("/login/naver")
-	public TokenDto login(@RequestBody @Valid RequestAccessToken requestAccessToken) {
+	public ResponseSuccess login(@RequestBody @Valid RequestAccessToken requestAccessToken) {
 		String accessToken = requestAccessToken.getAccessToken();
 		Token token = memberService.getToken(accessToken);
 		
-		return new TokenDto(token);
+		return new ResponseSuccess(200, "로그인에 성공했습니다.", new TokenDto(token));
 	}
 	
 	@ApiOperation(
@@ -43,10 +44,10 @@ public class AuthController {
 			notes = "리프레시 토큰을 이용하여 토큰을 재발급 받는다."
 	)
 	@GetMapping("/reissue")
-	public TokenDto reissue() {
+	public ResponseSuccess reissue() {
 		Token token = memberService.reissueToken();
 		
-		return new TokenDto(token);
+		return new ResponseSuccess(200, "토큰 재발급에 성공했습니다.", new TokenDto(token));
 	}
 	
 	@ApiOperation(
@@ -54,15 +55,17 @@ public class AuthController {
 	    notes = "에세스 토큰을 이용하여 사용자의 정보를 조회한다."
 	)
 	@GetMapping("/my")
-	public MemberDto userInfo() {
+	public ResponseSuccess userInfo() {
 		Member member = memberService.getMember();
-	
-		return new MemberDto(member.getEmail(), member.getName(), member.getRole());
+		
+		MemberDto memberDto = new MemberDto(member.getEmail(), member.getName(), member.getRole());
+		
+		return new ResponseSuccess(200, "사용자 정보를 불러오는데 성공했습니다.", memberDto);
 	}
 	
 	@Data
 	static class RequestAccessToken {
-		@NotEmpty(message = "네이버로 부터 받은 에세스 토큰을 넣어주세요.")
+		@NotEmpty(message = "NOT_EMPTY:네이버로 부터 받은 에세스 토큰을 넣어주세요.")
 		private String accessToken;
 	}
 	

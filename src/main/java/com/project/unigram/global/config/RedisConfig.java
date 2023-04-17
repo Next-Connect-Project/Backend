@@ -1,4 +1,4 @@
-package com.project.unigram.config;
+package com.project.unigram.global.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;

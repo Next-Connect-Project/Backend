@@ -5,9 +5,11 @@ import com.project.unigram.auth.domain.Role;
 import com.project.unigram.auth.domain.Token;
 import com.project.unigram.auth.dto.NaverMemberDto;
 import com.project.unigram.auth.dto.ResponseNaver;
+import com.project.unigram.auth.exception.AuthErrorCode;
 import com.project.unigram.auth.repository.MemberRepository;
 import com.project.unigram.auth.repository.TokenRepository;
 import com.project.unigram.auth.security.TokenGenerator;
+import com.project.unigram.global.exception.ServerException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -34,7 +36,6 @@ import java.util.stream.Collectors;
 public class MemberService {
 
 	private final MemberRepository memberRepository;
-	private final TokenRepository tokenRepository;
 	private final TokenGenerator tokenGenerator;
 	private final RestTemplate restTemplate;
 	
@@ -58,15 +59,19 @@ public class MemberService {
 	public Member getMember() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String memberId = authentication.getName();
+		
 		return memberRepository.findOne(Long.parseLong(memberId));
 	}
 	
 	private Token generateToken(Long memberId, Role role) {
 		// 토큰 생성 후 저장
 		Token token = tokenGenerator.getToken(memberId, role);
-		tokenRepository.save(memberId, token.getRefreshToken(), tokenGenerator.getRefreshExp());
 		
 		return token;
+	}
+	
+	private String getAccessTokenFromNaver(String authorization) {
+		return null;
 	}
 	
 	private Member getUserInfoFromNaver(String accessToken) {
@@ -92,7 +97,7 @@ public class MemberService {
 			
 			return member;
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
-			throw e;
+			throw new ServerException("네이버 서버와 통신할 때 오류가 발생했습니다.", AuthErrorCode.NAVER_SERVER_ERROR);
 		}
 	}
 	
