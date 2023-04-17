@@ -11,6 +11,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -21,7 +24,7 @@ public class SecurityConfig {
 	
 	@Bean
 	public WebSecurityCustomizer configure() {
-		return (web) -> web.ignoring().mvcMatchers(
+		return (web) -> web.ignoring().antMatchers(
 				/* swagger v2 */
 				"/v2/api-docs",
 				"/swagger-resources",
@@ -40,7 +43,7 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
-				.cors()
+				.cors().configurationSource(corsConfigurationSource())
 				.and()
 				.csrf().disable()
 				.httpBasic().disable()
@@ -57,5 +60,19 @@ public class SecurityConfig {
 	public JWTAuthenticationFilter jwtAuthenticationFilter() {
 		return new JWTAuthenticationFilter(tokenGenerator);
 	}
-
+	
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		// 스프링 부트 2.4.0부터 allowCredentials가 true일 때 allowedOrigins에 특수 값인 "*" 추가할 수 없음
+		configuration.addAllowedOriginPattern("*");
+		configuration.addAllowedHeader("*");
+		configuration.addAllowedMethod("*");
+		configuration.setAllowCredentials(true);
+		
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
+	
 }
