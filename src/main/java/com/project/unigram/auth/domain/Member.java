@@ -1,10 +1,14 @@
 package com.project.unigram.auth.domain;
 
+import com.project.unigram.recruit.domain.Recruitment;
 import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,6 +24,9 @@ public class Member {
 	private String email;
 	
 	private Role role;
+	
+	@OneToMany(mappedBy = "member")
+	private List<Recruitment> recruitments = new ArrayList<>();
 	
 	@Builder // setter를 사용하지 않고 Builder 사용
 	public Member(Long id, String name, String email, Role role) {

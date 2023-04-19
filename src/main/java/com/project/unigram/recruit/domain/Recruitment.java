@@ -11,6 +11,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Table(name = "recruitment")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Recruitment {
 
@@ -20,7 +21,7 @@ public class Recruitment {
 	
 	// join
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id")
+	@JoinColumn(name = "member_id") // 연관 관계 주인
 	private Member member;
 	
 	private Category category;
@@ -31,7 +32,7 @@ public class Recruitment {
 	private LocalDateTime dueDate;
 	
 	@ElementCollection
-	@CollectionTable(name = "skill_table", joinColumns =
+	@CollectionTable(name = "skill", joinColumns =
 		@JoinColumn(name = "recruitment_id")
 	)
 	@Column(name = "skill_name")
@@ -41,9 +42,9 @@ public class Recruitment {
 	private Personnel personnel;
 	
 	@Embedded
-	private Detail detail;
+	private Detail required;
 	
-	private String select;
+	private String selected;
 	
 	private State state;
 	
