@@ -1,4 +1,4 @@
-package com.project.unigram.config;
+package com.project.unigram.global.config;
 
 import com.project.unigram.auth.security.JWTAuthenticationFilter;
 import com.project.unigram.auth.security.TokenGenerator;
