@@ -3,10 +3,7 @@ package com.project.unigram.auth.domain;
 import com.project.unigram.recruit.domain.Recruitment;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +20,7 @@ public class Member {
 	
 	private String email;
 	
+	@Enumerated(EnumType.STRING)
 	private Role role;
 	
 	@OneToMany(mappedBy = "member")

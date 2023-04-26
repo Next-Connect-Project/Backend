@@ -4,10 +4,13 @@ import com.project.unigram.auth.domain.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -24,6 +27,7 @@ public class Recruitment {
 	@JoinColumn(name = "member_id") // 연관 관계 주인
 	private Member member;
 	
+	@Enumerated(EnumType.STRING)
 	private Category category;
 	
 	@Embedded
@@ -42,10 +46,37 @@ public class Recruitment {
 	private Personnel personnel;
 	
 	@Embedded
-	private Detail required;
+	private Required required;
 	
 	private String selected;
 	
+	@Enumerated(EnumType.STRING)
 	private State state;
+	
+	public static Recruitment create(Member member,
+	                          Category category,
+	                          LocalDateTime dueDate,
+	                          String[] skill,
+	                          Personnel personnel,
+	                          Required required,
+	                          String selected) {
+		Recruitment recruitment = new Recruitment();
+		
+		recruitment.setMember(member);
+		recruitment.category = category;
+		recruitment.dueDate = dueDate;
+		recruitment.skill = Arrays.stream(skill).collect(Collectors.toList());
+		recruitment.personnel = personnel;
+		recruitment.required = required;
+		recruitment.selected = selected;
+		recruitment.state = State.OPEN;
+		
+		return recruitment;
+	}
+	
+	private void setMember(Member member) {
+		this.member = member;
+		member.getRecruitments().add(this);
+	}
 	
 }
