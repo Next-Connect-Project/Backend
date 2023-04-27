@@ -1,5 +1,6 @@
 package com.project.unigram.promotion.service;
 
+import com.project.unigram.auth.domain.Member;
 import com.project.unigram.promotion.domain.Promotion;
 import com.project.unigram.promotion.dto.PromotionDto;
 import com.project.unigram.promotion.repository.PromotionRepository;
@@ -35,5 +36,13 @@ public class PromotionService {
     }
 
     //게시물 작성
-
+    @Transactional
+    public PromotionDto write(PromotionDto promotionDto, Member member){
+        Promotion promotion=new Promotion();
+        promotion.setTitle(promotionDto.getTitle());
+        promotion.setContent(promotionDto.getContent());
+        promotion.setMember(member);
+        promotionRepository.save(promotion);
+        return PromotionDto.toDto(promotion);
+    }
 }

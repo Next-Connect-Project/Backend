@@ -11,7 +11,7 @@ import javax.persistence.MappedSuperclass;
 import java.time.LocalDate;
 
 @Getter
-@MappedSuperclass
+@MappedSuperclass //부모 클래스의 필드들도 전부 칼럼으로 인식하게 함
 @EntityListeners(AuditingEntityListener.class)
 public class BaseTimeEntity {
     @CreatedDate //최근 생성날짜 자동 저장

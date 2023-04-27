@@ -28,16 +28,16 @@ public class Promotion extends BaseTimeEntity{
 
     @Column(length = 30, nullable = false)
     private String title; // 글 제목
-    @Column(length = 200, nullable = false)
+    @Column(nullable = false)
     private String content; // 글 내용
 
 
-    @Builder
-    public Promotion(Member member, String title, String content){
-        this.member=member;
-        this.title=title;
-        this.content=content;
-    }
+//    @Builder
+//    public Promotion(Member member, String title, String content){
+//        this.member=member;
+//        this.title=title;
+//        this.content=content;
+//    }
     /*
     * @Builder
     * 생성자와 동일한 역할, 코드 실행 전에 값을 실을 필드를 명확히 인지 가능
