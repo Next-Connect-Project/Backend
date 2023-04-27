@@ -3,12 +3,12 @@ package com.project.unigram.auth.security;
 import com.project.unigram.auth.domain.Role;
 import com.project.unigram.auth.domain.Token;
 import com.project.unigram.auth.domain.Type;
+import com.project.unigram.auth.exception.AuthErrorCode;
 import com.project.unigram.auth.exception.TokenInvalidException;
 import com.project.unigram.auth.repository.TokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -58,7 +58,10 @@ public class TokenGenerator {
 		Claims claims = token.getClaims(key, tokenType);
 		String memberId = claims.getSubject();
 		
-		if (tokenType == Type.RTK) isRightRefreshToken(Long.parseLong(memberId), token.getRefreshToken());
+		// 잘못된 타입의 토큰을 넘겨줬을 때
+		if (!claims.get("Type", String.class).equals(tokenType.toString())) throw new TokenInvalidException(String.format("잘못된 타입의 토큰입니다. expected: %s", tokenType), AuthErrorCode.WRONG_TOKEN_TYPE);
+		
+		// if (tokenType == Type.RTK) isRightRefreshToken(Long.parseLong(memberId), token.getRefreshToken());
 		
 		// 모든 claims 가져와서 List로 만듦
 		Collection<? extends GrantedAuthority> authority = Arrays.stream(claimKeys)
@@ -70,11 +73,11 @@ public class TokenGenerator {
 		return new UsernamePasswordAuthenticationToken(principal, token, authority);
 	}
 	
-	private void isRightRefreshToken(Long memberId, String refreshToken) {
-		String redisToken = tokenRepository.findById(memberId);
-		if (!redisToken.equals(refreshToken)) throw new TokenInvalidException("유효한 토큰이지만 해당 유저의 리프레시 토큰이 아닙니다.");
-	}
-	
+//	private void isRightRefreshToken(Long memberId, String refreshToken) {
+//		String redisToken = tokenRepository.findById(memberId);
+//		if (!redisToken.equals(refreshToken)) throw new TokenInvalidException("유효한 토큰이지만 해당 유저의 리프레시 토큰이 아닙니다.");
+//	}
+
 	// 유효시간 생성
 	private Date getExp(Long sec) {
 		return new Date(System.currentTimeMillis() + sec);
