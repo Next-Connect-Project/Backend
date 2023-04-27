@@ -1,5 +1,6 @@
 package com.project.unigram.auth.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.unigram.recruit.domain.Recruitment;
 import lombok.*;
 
@@ -24,6 +25,7 @@ public class Member {
 	private Role role;
 	
 	@OneToMany(mappedBy = "member")
+	@JsonIgnore
 	private List<Recruitment> recruitments = new ArrayList<>();
 	
 	@Builder // setter를 사용하지 않고 Builder 사용

@@ -1,10 +1,10 @@
 package com.project.unigram.recruit.domain;
 
 import com.project.unigram.auth.domain.Member;
+import com.project.unigram.global.dto.Period;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Getter
 @Table(name = "recruitment")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Recruitment {
+public class Recruitment extends Period {
 
 	@Id @GeneratedValue
 	@Column(name = "recruitment_id")
@@ -29,9 +29,6 @@ public class Recruitment {
 	
 	@Enumerated(EnumType.STRING)
 	private Category category;
-	
-	@Embedded
-	private Period period;
 	
 	private LocalDateTime dueDate;
 	
