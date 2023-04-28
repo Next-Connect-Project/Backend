@@ -2,6 +2,7 @@ package com.project.unigram.recruit.domain;
 
 import com.project.unigram.auth.domain.Member;
 import com.project.unigram.global.dto.Period;
+import com.project.unigram.recruit.exception.RecruitException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -69,6 +70,11 @@ public class Recruitment extends Period {
 		recruitment.state = State.OPEN;
 		
 		return recruitment;
+	}
+	
+	public void close() {
+		if (this.state == State.CLOSE) throw new RecruitException("이미 마감된 글입니다.");
+		this.state = State.CLOSE;
 	}
 	
 	private void setMember(Member member) {

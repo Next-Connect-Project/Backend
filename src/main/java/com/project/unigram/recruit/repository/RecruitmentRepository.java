@@ -2,7 +2,7 @@ package com.project.unigram.recruit.repository;
 
 import com.project.unigram.auth.domain.QMember;
 import com.project.unigram.recruit.domain.*;
-import com.project.unigram.recruit.dto.RecruitmentSearchDto;
+import com.project.unigram.recruit.dto.RecruitmentSearch;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
@@ -21,16 +21,20 @@ public class RecruitmentRepository {
 		em.persist(recruitment);
 	}
 	
-	public List<Recruitment> findRecruitmentWithSearch(RecruitmentSearchDto recruitmentSearchDto) {
+	public Recruitment findOne(Long id) {
+		return em.find(Recruitment.class, id);
+	}
+	
+	public List<Recruitment> findRecruitmentWithSearch(RecruitmentSearch recruitmentSearch) {
 		JPAQueryFactory query = new JPAQueryFactory(em);
 		QRecruitment recruitment = QRecruitment.recruitment;
 		QMember member = QMember.member;
 		
 		return query.selectFrom(recruitment)
 			       .join(recruitment.member, member)
-			       .where(categoryEq(recruitmentSearchDto.getCategory()), stateEq(recruitmentSearchDto.getState()))
-			       .offset(recruitmentSearchDto.getOffset())
-			       .limit(recruitmentSearchDto.getLimit())
+			       .where(categoryEq(recruitmentSearch.getCategory()), stateEq(recruitmentSearch.getState()))
+			       .offset(recruitmentSearch.getOffset())
+			       .limit(recruitmentSearch.getLimit())
 			       .fetch();
 	}
 	

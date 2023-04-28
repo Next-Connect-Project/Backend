@@ -1,6 +1,7 @@
 package com.project.unigram.recruit.service;
 
 import com.project.unigram.recruit.domain.Recruitment;
+import com.project.unigram.recruit.dto.RecruitmentSearch;
 import com.project.unigram.recruit.repository.RecruitmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,12 @@ public class RecruitmentService {
 	public Long post(Recruitment recruitment) {
 		recruitmentRepository.save(recruitment);
 		return recruitment.getId();
+	}
+	
+	@Transactional
+	public void close(Long id) {
+		Recruitment r = recruitmentRepository.findOne(id);
+		r.close();
 	}
 	
 }

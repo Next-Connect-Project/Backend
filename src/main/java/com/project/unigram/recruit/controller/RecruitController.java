@@ -5,17 +5,19 @@ import com.project.unigram.auth.domain.Member;
 import com.project.unigram.auth.service.MemberService;
 import com.project.unigram.global.dto.ResponseSuccess;
 import com.project.unigram.recruit.domain.*;
-import com.project.unigram.recruit.dto.RecruitmentSearchDto;
+import com.project.unigram.recruit.dto.RecruitmentSearch;
 import com.project.unigram.recruit.repository.RecruitmentRepository;
 import com.project.unigram.recruit.service.RecruitmentService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,13 +54,17 @@ public class RecruitController {
 	}
 	
 	@GetMapping("/search")
-	public ResponseSuccess search(@RequestParam(value = "category", defaultValue = "null") Category category,
-	                              @RequestParam(value = "state", defaultValue = "null") State state,
-	                              @RequestParam(value = "offset", defaultValue = "0") int offset,
-	                              @RequestParam(value = "limit", defaultValue = "20") int limit) {
-		RecruitmentSearchDto recruitmentSearchDto = new RecruitmentSearchDto(category, state, offset, limit);
+	public ResponseSuccess search(@RequestParam(value = "category", defaultValue = "null") String category,
+	                              @RequestParam(value = "state", defaultValue = "null") String state,
+	                              @RequestParam(value = "page", defaultValue = "1") int page,
+	                              @RequestParam(value = "limit", defaultValue = "16") int limit) {
 		
-		List<Recruitment> recruitments = recruitmentRepository.findRecruitmentWithSearch(recruitmentSearchDto);
+		Category c = category == null ? null : Category.valueOf(category);
+		State s = state == null ? null : State.valueOf(state);
+		
+		RecruitmentSearch recruitmentSearch = new RecruitmentSearch(c, s, page, limit);
+		
+		List<Recruitment> recruitments = recruitmentRepository.findRecruitmentWithSearch(recruitmentSearch);
 		
 		List<RecruitmentDto> recruitmentDtos = recruitments.stream()
 													.map(RecruitmentDto::new)
@@ -67,10 +73,23 @@ public class RecruitController {
 		return new ResponseSuccess(200, "모집글 조회에 성공하였습니다.", new ResponseSearchRecruitment(recruitmentDtos));
 	}
 	
+	@PatchMapping("/close/{recruitId}")
+	public ResponseSuccess close(@PathVariable("recruitId") Long recruitId) {
+		recruitmentService.close(recruitId);
+		Recruitment r = recruitmentRepository.findOne(recruitId);
+		return new ResponseSuccess(200, "성공적으로 마감했습니다.", new ResponseRecruitmentId(r.getId()));
+	}
+	
 	@Data
 	@AllArgsConstructor
 	static class ResponseSearchRecruitment {
 		List<RecruitmentDto> recruitments;
+	}
+	
+	@Data
+	@AllArgsConstructor
+	static class ResponseRecruitmentId {
+		Long id;
 	}
 	
 	@Data
@@ -81,7 +100,7 @@ public class RecruitController {
 		
 		private String member;
 		
-		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
+		@JsonFormat(pattern = "yyyy-MM-ddTHH:mm:ss", timezone = "Asia/Seoul")
 		private LocalDateTime dueDate;
 		
 		private String[] skill;
