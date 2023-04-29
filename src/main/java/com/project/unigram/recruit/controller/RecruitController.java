@@ -12,12 +12,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,11 +71,19 @@ public class RecruitController {
 		return new ResponseSuccess(200, "모집글 조회에 성공하였습니다.", new ResponseSearchRecruitment(recruitmentDtos));
 	}
 	
-	@PatchMapping("/close/{recruitId}")
-	public ResponseSuccess close(@PathVariable("recruitId") Long recruitId) {
-		recruitmentService.close(recruitId);
+	@DeleteMapping("/delete/{recruitId}")
+	public ResponseSuccess delete(@PathVariable("recruitId") Long recruitId) {
 		Recruitment r = recruitmentRepository.findOne(recruitId);
-		return new ResponseSuccess(200, "성공적으로 마감했습니다.", new ResponseRecruitmentId(r.getId()));
+		recruitmentService.delete(r);
+		return new ResponseSuccess(200, "", new ResponseRecruitmentId(r.getId()));
+	}
+	
+	@PatchMapping("/state/{recruitId}")
+	public ResponseSuccess state(@PathVariable("recruitId") Long recruitId) {
+		recruitmentService.state(recruitId);
+		Recruitment r = recruitmentRepository.findOne(recruitId);
+		String msg = r.getState() == State.OPEN ? "오픈" : "마감";
+		return new ResponseSuccess(200, "성공적으로 " + msg + "했습니다.", new ResponseRecruitmentId(r.getId()));
 	}
 	
 	@Data

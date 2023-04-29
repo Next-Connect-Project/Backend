@@ -25,6 +25,10 @@ public class RecruitmentRepository {
 		return em.find(Recruitment.class, id);
 	}
 	
+	public void deleteOne(Recruitment r) {
+		em.remove(r);
+	}
+	
 	public List<Recruitment> findRecruitmentWithSearch(RecruitmentSearch recruitmentSearch) {
 		JPAQueryFactory query = new JPAQueryFactory(em);
 		QRecruitment recruitment = QRecruitment.recruitment;

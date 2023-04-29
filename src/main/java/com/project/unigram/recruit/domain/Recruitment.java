@@ -77,6 +77,11 @@ public class Recruitment extends Period {
 		this.state = State.CLOSE;
 	}
 	
+	public void open() {
+		if (this.state = State.OPEN) throw new RecruitException("이미 오픈된 글입니다.");
+		this.state = State.OPEN;
+	}
+	
 	private void setMember(Member member) {
 		this.member = member;
 		member.getRecruitments().add(this);

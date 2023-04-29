@@ -1,7 +1,7 @@
 package com.project.unigram.recruit.service;
 
 import com.project.unigram.recruit.domain.Recruitment;
-import com.project.unigram.recruit.dto.RecruitmentSearch;
+import com.project.unigram.recruit.domain.State;
 import com.project.unigram.recruit.repository.RecruitmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,9 +21,15 @@ public class RecruitmentService {
 	}
 	
 	@Transactional
-	public void close(Long id) {
+	public void state(Long id) {
 		Recruitment r = recruitmentRepository.findOne(id);
-		r.close();
+		if (r.getState() == State.OPEN) r.close();
+		else r.open();
+	}
+	
+	@Transactional
+	public void delete(Recruitment r) {
+		recruitmentRepository.deleteOne(r);
 	}
 	
 }
