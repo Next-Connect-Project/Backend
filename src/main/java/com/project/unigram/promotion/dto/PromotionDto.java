@@ -1,46 +1,41 @@
 package com.project.unigram.promotion.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.unigram.auth.domain.Member;
 import com.project.unigram.promotion.domain.Promotion;
 import lombok.*;
 
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class PromotionDto {
 
     private Long id;
 
-//    private LocalDate createdAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    private LocalDateTime createdAt;
 
     private String title;
 
-    private Member member;
-
     private String content;
 
-//    private LocalDate modifiedAt;
-
-//    @Builder //PromotionDto 객체 생성자 작성
-//    public PromotionCreateRequestDto(Member member, String title, String content){
-//        this.member=member;
-//        this.title=title;
-//        this.content=content;
-//    }
-
-    //빌더 클래스 생성자로 빌더 객체 생성
+    private String name;
+    private String abstractContent;
 
     //toDto 메서드를 만들어, Promotion 객체만 넣으면 바로 PromotionDto를 만들도록 하였다.
     public static PromotionDto toDto(Promotion promotion){
         return new PromotionDto(
                 promotion.getPostId(),
+                promotion.getCreatedAt(),
                 promotion.getTitle(),
-                promotion.getMember(),
-                promotion.getContent()
+                promotion.getContent(),
+                promotion.getMember().getName(),
+                promotion.getAbstractContent()
         );
     }
 
