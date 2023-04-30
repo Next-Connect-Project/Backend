@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Table(name="promotion")
-
+@NoArgsConstructor
 public class Promotion extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO) //dialect 값에 따른 기본 키 자동 생성 전략 지정
@@ -30,8 +30,6 @@ public class Promotion extends BaseTimeEntity {
 
     @Column(nullable= false)
     private String abstractContent; // 요약 내용
-
-
 
     @Builder
     public Promotion(Member member, String title, String content, String abstractContent){

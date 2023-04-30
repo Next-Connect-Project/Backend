@@ -29,12 +29,16 @@ public class PromotionDto {
 
     //toDto 메서드를 만들어, Promotion 객체만 넣으면 바로 PromotionDto를 만들도록 하였다.
     public static PromotionDto toDto(Promotion promotion){
+        String name="";
+        if(promotion.getMember()==null){
+            name="no name";
+        }
         return new PromotionDto(
                 promotion.getPostId(),
                 promotion.getCreatedAt(),
                 promotion.getTitle(),
                 promotion.getContent(),
-                promotion.getMember().getName(),
+                name,
                 promotion.getAbstractContent()
         );
     }
