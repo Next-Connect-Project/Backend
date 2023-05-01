@@ -11,19 +11,11 @@ import javax.persistence.Embeddable;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Personnel {
 	
-	private Integer back;
-	private Integer front;
-	private Integer design;
-	private Integer pm;
-	private Integer other;
-	
-	public Personnel(Integer back, Integer front, Integer design, Integer pm, Integer other) {
-		this.back = back;
-		this.front = front;
-		this.design = design;
-		this.pm = pm;
-		this.other = other;
-	}
+	private Integer backNumber;
+	private Integer frontNumber;
+	private Integer designNumber;
+	private Integer PMNumber;
+	private Integer otherNumber;
 	
 }
 

@@ -5,6 +5,8 @@ import com.project.unigram.auth.domain.Member;
 import com.project.unigram.auth.service.MemberService;
 import com.project.unigram.global.dto.ResponseSuccess;
 import com.project.unigram.recruit.domain.*;
+import com.project.unigram.recruit.dto.RequestRecruitmentDto;
+import com.project.unigram.recruit.dto.ResponseRecruitmentDto;
 import com.project.unigram.recruit.dto.RecruitmentSearch;
 import com.project.unigram.recruit.repository.RecruitmentRepository;
 import com.project.unigram.recruit.service.RecruitmentService;
@@ -15,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,16 +34,21 @@ public class RecruitController {
 	public ResponseSuccess create(@RequestBody @Valid RequestRecruitmentDto res) {
 		Member member = memberService.getMember();
 		
-		PersonnelDto personnelDto = res.getPersonnel();
-		Personnel personnel = new Personnel(personnelDto.getBack(), personnelDto.getFront(), personnelDto.getDesign(), personnelDto.getPm(), personnelDto.getOther());
-		
-		Required required = new Required(res.getPurpose(), res.getTime(), res.getContact(), res.getProcess());
+		Required required = Required.builder()
+				                    .timeandplace(res.getTimeandplace())
+				                    .purpose(res.getPurpose())
+				                    .duration(res.getDuration())
+				                    .progress(res.getProgress())
+				                    .contact(res.getContact())
+				                    .way(res.getWay())
+									.build();
 		
 		Recruitment recruitment = Recruitment.create(member,
 				res.getCategory(),
-				res.getDueDate(),
-				res.getSkill(),
-				personnel,
+				res.getTitle(),
+				res.getDeadline(),
+				res.getTech(),
+				res.getPersonnel(),
 				required,
 				res.getSelected());
 		
@@ -64,32 +70,44 @@ public class RecruitController {
 		
 		List<Recruitment> recruitments = recruitmentRepository.findRecruitmentWithSearch(recruitmentSearch);
 		
-		List<RecruitmentDto> recruitmentDtos = recruitments.stream()
-													.map(RecruitmentDto::new)
+		List<ResponseRecruitmentDto> responseRecruitmentDtos = recruitments.stream()
+													.map(ResponseRecruitmentDto::new)
 													.collect(Collectors.toList());
 		
-		return new ResponseSuccess(200, "모집글 조회에 성공하였습니다.", new ResponseSearchRecruitment(recruitmentDtos));
+		return new ResponseSuccess(200, "모집글 조회에 성공하였습니다.", new ResponseSearchRecruitment(responseRecruitmentDtos));
+	}
+	
+	@PutMapping("/update/{recruitId}")
+	public ResponseSuccess update(@PathVariable("recruitId") Long recruitId, @RequestBody @Valid RequestRecruitmentDto requestRecruitmentDto) {
+		Member member = memberService.getMember();
+		
+		recruitmentService.update(recruitId, requestRecruitmentDto, member.getId());
+		
+		return new ResponseSuccess(200, "모집글을 성공적으로 수정했습니다.", new ResponseRecruitmentId(recruitId));
 	}
 	
 	@DeleteMapping("/delete/{recruitId}")
 	public ResponseSuccess delete(@PathVariable("recruitId") Long recruitId) {
-		Recruitment r = recruitmentRepository.findOne(recruitId);
-		recruitmentService.delete(r);
-		return new ResponseSuccess(200, "", new ResponseRecruitmentId(r.getId()));
+		Member member = memberService.getMember();
+		
+		recruitmentService.delete(recruitId, member.getId());
+		
+		return new ResponseSuccess(200, "모집글을 성공적으로 삭제하였습니다.", new ResponseRecruitmentId(recruitId));
 	}
 	
 	@PatchMapping("/state/{recruitId}")
 	public ResponseSuccess state(@PathVariable("recruitId") Long recruitId) {
-		recruitmentService.state(recruitId);
-		Recruitment r = recruitmentRepository.findOne(recruitId);
-		String msg = r.getState() == State.OPEN ? "오픈" : "마감";
-		return new ResponseSuccess(200, "성공적으로 " + msg + "했습니다.", new ResponseRecruitmentId(r.getId()));
+		Member member = memberService.getMember();
+		
+		recruitmentService.state(recruitId, member.getId());
+		
+		return new ResponseSuccess(200, "성공적으로 모집글의 상태를 수정했습니다.", new ResponseRecruitmentId(recruitId));
 	}
 	
 	@Data
 	@AllArgsConstructor
 	static class ResponseSearchRecruitment {
-		List<RecruitmentDto> recruitments;
+		List<ResponseRecruitmentDto> recruitments;
 	}
 	
 	@Data
@@ -97,75 +115,11 @@ public class RecruitController {
 	static class ResponseRecruitmentId {
 		Long id;
 	}
-	
-	@Data
-	static class RecruitmentDto {
-		private Long id;
-		
-		private Category category;
-		
-		private String member;
-		
-		@JsonFormat(pattern = "yyyy-MM-ddTHH:mm:ss", timezone = "Asia/Seoul")
-		private LocalDateTime dueDate;
-		
-		private String[] skill;
-		
-		private Personnel personnel;
-		
-		private Required required;
-		
-		private String selected;
-		
-		public RecruitmentDto(Recruitment recruitment) {
-			this.id = recruitment.getId();
-			this.category = recruitment.getCategory();
-			this.member = recruitment.getMember().getName();
-			this.dueDate = recruitment.getDueDate();
-			this.skill = recruitment.getSkill().stream().toArray(String[]::new);
-			this.personnel = recruitment.getPersonnel();
-			this.required = recruitment.getRequired();
-			this.selected = recruitment.getSelected();
-		}
-	}
 
 	@Data
 	@AllArgsConstructor
 	static class ResponseCreateRecruitment {
 		private Long id;
-	}
-	
-	@Data
-	static class RequestRecruitmentDto {
-		
-		private Category category;
-		
-		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
-		private LocalDateTime dueDate;
-		
-		private String[] skill;
-		
-		private PersonnelDto personnel;
-		
-		private String purpose;
-		
-		private String time;
-		
-		private String contact;
-		
-		private String process;
-		
-		private String selected;
-		
-	}
-	
-	@Data
-	static class PersonnelDto {
-		private int back;
-		private int front;
-		private int pm;
-		private int other;
-		private int design;
 	}
 	
 }

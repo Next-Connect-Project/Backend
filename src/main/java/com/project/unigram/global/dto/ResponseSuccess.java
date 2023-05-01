@@ -5,10 +5,10 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ResponseSuccess {
+public class ResponseSuccess<T> {
 	
 	private int resultCode;
 	private String message;
-	private Object response;
+	private T response;
 	
 }

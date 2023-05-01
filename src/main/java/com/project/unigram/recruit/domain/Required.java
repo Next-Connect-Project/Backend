@@ -1,6 +1,7 @@
 package com.project.unigram.recruit.domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,14 +13,20 @@ import javax.persistence.Embeddable;
 public class Required {
 	
 	private String purpose;
-	private String time;
+	private String progress;
 	private String contact;
-	private String process;
+	private String duration;
+	private String timeandplace;
+	private String way;
 	
-	public Required(String purpose, String time, String contact, String process) {
+	@Builder
+	public Required(String purpose, String progress, String contact, String duration, String timeandplace, String way) {
 		this.purpose = purpose;
-		this.time = time;
+		this.progress = progress;
 		this.contact = contact;
-		this.process = process;
+		this.duration = duration;
+		this.timeandplace = timeandplace;
+		this.way = way;
 	}
+	
 }

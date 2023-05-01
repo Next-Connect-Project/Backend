@@ -31,14 +31,16 @@ public class Recruitment extends Period {
 	@Enumerated(EnumType.STRING)
 	private Category category;
 	
-	private LocalDateTime dueDate;
+	private String title;
+	
+	private LocalDateTime deadline;
 	
 	@ElementCollection
-	@CollectionTable(name = "skill", joinColumns =
+	@CollectionTable(name = "tech", joinColumns =
 		@JoinColumn(name = "recruitment_id")
 	)
-	@Column(name = "skill_name")
-	private List<String> skill;
+	@Column(name = "tech_name")
+	private List<String> tech;
 	
 	@Embedded
 	private Personnel personnel;
@@ -53,8 +55,9 @@ public class Recruitment extends Period {
 	
 	public static Recruitment create(Member member,
 	                          Category category,
-	                          LocalDateTime dueDate,
-	                          String[] skill,
+							  String title,
+	                          LocalDateTime deadline,
+	                          String[] tech,
 	                          Personnel personnel,
 	                          Required required,
 	                          String selected) {
@@ -62,8 +65,9 @@ public class Recruitment extends Period {
 		
 		recruitment.setMember(member);
 		recruitment.category = category;
-		recruitment.dueDate = dueDate;
-		recruitment.skill = Arrays.stream(skill).collect(Collectors.toList());
+		recruitment.title = title;
+		recruitment.deadline = deadline;
+		recruitment.tech = Arrays.stream(tech).collect(Collectors.toList());
 		recruitment.personnel = personnel;
 		recruitment.required = required;
 		recruitment.selected = selected;
@@ -72,14 +76,35 @@ public class Recruitment extends Period {
 		return recruitment;
 	}
 	
+	public void updateAll(Category category,
+						  String title,
+	                      LocalDateTime deadline,
+	                      List<String> tech,
+	                      Personnel personnel,
+	                      Required required,
+	                      String selected) {
+		this.category = category;
+		this.title = title;
+		this.deadline = deadline;
+		this.tech = tech;
+		this.personnel = personnel;
+		this.required = required;
+		this.selected = selected;
+	}
+	
 	public void close() {
 		if (this.state == State.CLOSE) throw new RecruitException("이미 마감된 글입니다.");
 		this.state = State.CLOSE;
 	}
 	
 	public void open() {
-		if (this.state = State.OPEN) throw new RecruitException("이미 오픈된 글입니다.");
+		if (this.state == State.OPEN) throw new RecruitException("이미 오픈된 글입니다.");
 		this.state = State.OPEN;
+	}
+	
+	public boolean isAuthorizedMember(Long memberId) {
+		if (member.getId() != memberId) return false;
+		return true;
 	}
 	
 	private void setMember(Member member) {
