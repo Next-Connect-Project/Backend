@@ -2,7 +2,6 @@ package com.project.unigram.recruit.dto;
 
 import com.project.unigram.recruit.domain.Category;
 import com.project.unigram.recruit.domain.State;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data

@@ -57,7 +57,10 @@ public class MemberService {
 	// 멤버 정보 가져오기
 	public Member getMember() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
 		String memberId = authentication.getName();
+		
+		if (memberId.equals("anonymousUser")) return null;
 		
 		return memberRepository.findOne(Long.parseLong(memberId));
 	}
@@ -119,6 +122,7 @@ public class MemberService {
 				                .id(naverMemberDto.getId())
 				                .name(naverMemberDto.getName())
 				                .email(naverMemberDto.getEmail())
+				                .role(Role.NAVER)
 				                .build();
 			
 			return member;

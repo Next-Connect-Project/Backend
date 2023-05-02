@@ -1,13 +1,13 @@
 package com.project.unigram.recruit.controller;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.unigram.auth.domain.Member;
 import com.project.unigram.auth.service.MemberService;
 import com.project.unigram.global.dto.ResponseSuccess;
 import com.project.unigram.recruit.domain.*;
 import com.project.unigram.recruit.dto.RequestRecruitmentDto;
-import com.project.unigram.recruit.dto.ResponseRecruitmentDto;
+import com.project.unigram.recruit.dto.ResponseDetailRecruitmentDto;
 import com.project.unigram.recruit.dto.RecruitmentSearch;
+import com.project.unigram.recruit.dto.ResponseSimpleRecruitmentDto;
 import com.project.unigram.recruit.repository.RecruitmentRepository;
 import com.project.unigram.recruit.service.RecruitmentService;
 import lombok.AllArgsConstructor;
@@ -58,23 +58,32 @@ public class RecruitController {
 	}
 	
 	@GetMapping("/search")
-	public ResponseSuccess search(@RequestParam(value = "category", defaultValue = "null") String category,
-	                              @RequestParam(value = "state", defaultValue = "null") String state,
+	public ResponseSuccess search(@RequestParam(value = "category", required = false) Category category,
+	                              @RequestParam(value = "state", required = false) State state,
 	                              @RequestParam(value = "page", defaultValue = "1") int page,
 	                              @RequestParam(value = "limit", defaultValue = "16") int limit) {
-		
-		Category c = category == null ? null : Category.valueOf(category);
-		State s = state == null ? null : State.valueOf(state);
-		
-		RecruitmentSearch recruitmentSearch = new RecruitmentSearch(c, s, page, limit);
+		RecruitmentSearch recruitmentSearch = new RecruitmentSearch(category, state, page, limit);
 		
 		List<Recruitment> recruitments = recruitmentRepository.findRecruitmentWithSearch(recruitmentSearch);
-		
-		List<ResponseRecruitmentDto> responseRecruitmentDtos = recruitments.stream()
-													.map(ResponseRecruitmentDto::new)
+		List<ResponseSimpleRecruitmentDto> responseDetailRecruitmentDtos = recruitments.stream()
+													.map(ResponseSimpleRecruitmentDto::new)
 													.collect(Collectors.toList());
 		
-		return new ResponseSuccess(200, "모집글 조회에 성공하였습니다.", new ResponseSearchRecruitment(responseRecruitmentDtos));
+		return new ResponseSuccess(200, "모집글 조회에 성공하였습니다.", new ResponseSearchRecruitment(responseDetailRecruitmentDtos));
+	}
+	
+	@GetMapping("/detail/{recruitId}")
+	public ResponseSuccess detail(@PathVariable("recruitId") Long recruitId) {
+		Member member = memberService.getMember();
+		
+		Recruitment recruitment = recruitmentRepository.findOne(recruitId);
+		
+		boolean owner = false;
+		if (member != null) owner = recruitment.isAuthorizedMember(member.getId());
+		
+		ResponseDetailRecruitmentDto dto = new ResponseDetailRecruitmentDto(recruitment, owner);
+		
+		return new ResponseSuccess(200, "모집글 조회에 성공하였습니다.", dto);
 	}
 	
 	@PutMapping("/update/{recruitId}")
@@ -107,7 +116,7 @@ public class RecruitController {
 	@Data
 	@AllArgsConstructor
 	static class ResponseSearchRecruitment {
-		List<ResponseRecruitmentDto> recruitments;
+		List<ResponseSimpleRecruitmentDto> recruitments;
 	}
 	
 	@Data

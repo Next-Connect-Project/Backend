@@ -4,7 +4,6 @@ import com.project.unigram.recruit.domain.Recruitment;
 import com.project.unigram.recruit.domain.Required;
 import com.project.unigram.recruit.domain.State;
 import com.project.unigram.recruit.dto.RequestRecruitmentDto;
-import com.project.unigram.recruit.dto.ResponseRecruitmentDto;
 import com.project.unigram.recruit.exception.RecruitException;
 import com.project.unigram.recruit.repository.RecruitmentRepository;
 import lombok.RequiredArgsConstructor;
