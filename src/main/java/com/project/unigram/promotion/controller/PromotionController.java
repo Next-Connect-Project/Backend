@@ -26,8 +26,8 @@ public class PromotionController {
     @ResponseStatus(HttpStatus.OK)
     //정상 실행시 상태코드를 200으로 주는 코드
     @GetMapping("/resources")
-    public Response<?> findAll(){
-        return new Response<>("200","전체 게시물 리턴",promotionService.getPromotions());
+    public Response findAll(){
+        return new Response(200,"전체 게시물 리턴",promotionService.getPromotions());
     }
 
 
@@ -37,7 +37,7 @@ public class PromotionController {
     @GetMapping("/detail/{memberId}")
     //
     public Response getPromotion(@PathVariable("memberId") Long memberId){
-        return new Response("200", "개별 게시물 리턴", promotionService.getPromotion(memberId));
+        return new Response(200, "개별 게시물 리턴", promotionService.getPromotion(memberId));
     }
 
 
@@ -46,13 +46,13 @@ public class PromotionController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/")
     public Response write(@RequestBody @Valid PromotionCreateDto promotionCreateDto){
-        if(promotionCreateDto.getTitle()==null) {
-            throw new PromotionException();
+        if(promotionCreateDto.getTitle()=="" || promotionCreateDto.getTitle()==" "|| promotionCreateDto.getTitle()==null) {
+            throw new IllegalArgumentException();
         }
 
         //@RequestBody를 쓰면 Json을 파싱
         Member member =memberService.getMember();
-        return new Response("200", "글 작성 성공",promotionService.write(promotionCreateDto, member));
+        return new Response(200, "글 작성 성공",promotionService.write(promotionCreateDto, member));
     }
 
 }
