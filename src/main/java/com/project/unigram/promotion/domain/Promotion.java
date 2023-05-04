@@ -14,7 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Promotion extends BaseTimeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO) //dialect 값에 따른 기본 키 자동 생성 전략 지정
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //dialect 값에 따른 기본 키 자동 생성 전략 지정
     @Column(name="post_id", unique = true, nullable = false)
     private Long postId;
 

@@ -32,6 +32,7 @@ public class PromotionService {
     //전체 게시물 조회
     @Transactional(readOnly = true)
     public List<PromotionDto> getPromotions() {
+
         List<Promotion> promotions = promotionRepository.findAll();
         List<PromotionDto> promotionDtos = new ArrayList<>();
         List<PromotionDto> promotionList=new ArrayList<>();

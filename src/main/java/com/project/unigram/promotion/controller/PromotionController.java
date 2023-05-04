@@ -5,6 +5,7 @@ import com.project.unigram.auth.service.MemberService;
 import com.project.unigram.promotion.Response;
 import com.project.unigram.promotion.dto.PromotionCreateDto;
 import com.project.unigram.promotion.dto.PromotionDto;
+import com.project.unigram.promotion.repository.PromotionRepository;
 import com.project.unigram.promotion.service.PromotionService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import javax.validation.Valid;
 public class PromotionController {
     private final PromotionService promotionService;
     private final MemberService memberService;
+    private final PromotionRepository promotionRepository;
 
     //전체 게시글 조회
     @ApiOperation(value="전체 게시글 보기", notes="전체 게시글을 조회한다.")
@@ -27,6 +29,7 @@ public class PromotionController {
     //정상 실행시 상태코드를 200으로 주는 코드
     @GetMapping("/resources")
     public Response findAll(){
+
         return new Response(200,"전체 게시물 리턴",promotionService.getPromotions());
     }
 
