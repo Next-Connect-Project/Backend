@@ -8,6 +8,8 @@ import com.project.unigram.recruit.dto.RequestRecruitmentDto;
 import com.project.unigram.recruit.dto.ResponseDetailRecruitmentDto;
 import com.project.unigram.recruit.dto.RecruitmentSearch;
 import com.project.unigram.recruit.dto.ResponseSimpleRecruitmentDto;
+import com.project.unigram.recruit.exception.RecruitErrorCode;
+import com.project.unigram.recruit.exception.RecruitException;
 import com.project.unigram.recruit.repository.RecruitmentRepository;
 import com.project.unigram.recruit.service.RecruitmentService;
 import lombok.AllArgsConstructor;
@@ -44,7 +46,7 @@ public class RecruitController {
 									.build();
 		
 		Recruitment recruitment = Recruitment.create(member,
-				res.getCategory(),
+				Category.valueOf(res.getCategory()),
 				res.getTitle(),
 				res.getDeadline(),
 				res.getTech(),

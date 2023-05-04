@@ -43,6 +43,7 @@ public class ResponseDetailRecruitmentDto {
 	public ResponseDetailRecruitmentDto(Recruitment recruitment, boolean owner) {
 		this.id = recruitment.getId();
 		this.category = recruitment.getCategory();
+		this.title = recruitment.getTitle();
 		this.memberName = recruitment.getMember().getName();
 		this.createdAt = recruitment.getCreatedAt();
 		this.deadline = recruitment.getDeadline();

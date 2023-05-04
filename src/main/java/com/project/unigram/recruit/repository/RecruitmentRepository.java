@@ -3,6 +3,8 @@ package com.project.unigram.recruit.repository;
 import com.project.unigram.auth.domain.QMember;
 import com.project.unigram.recruit.domain.*;
 import com.project.unigram.recruit.dto.RecruitmentSearch;
+import com.project.unigram.recruit.exception.RecruitErrorCode;
+import com.project.unigram.recruit.exception.RecruitException;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
@@ -22,7 +24,9 @@ public class RecruitmentRepository {
 	}
 	
 	public Recruitment findOne(Long id) {
-		return em.find(Recruitment.class, id);
+		Recruitment recruitment = em.find(Recruitment.class, id);
+		if (recruitment == null) throw new RecruitException("존재하지 않는 모집글 입니다.", RecruitErrorCode.WRONG_ID);
+		return recruitment;
 	}
 	
 	public void deleteOne(Recruitment r) {

@@ -2,6 +2,8 @@ package com.project.unigram.recruit.domain;
 
 import com.project.unigram.auth.domain.Member;
 import com.project.unigram.global.dto.Period;
+import com.project.unigram.global.exception.ServerErrorCode;
+import com.project.unigram.global.exception.ServerException;
 import com.project.unigram.recruit.exception.RecruitException;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -93,12 +95,12 @@ public class Recruitment extends Period {
 	}
 	
 	public void close() {
-		if (this.state == State.CLOSE) throw new RecruitException("이미 마감된 글입니다.");
+		if (this.state == State.CLOSE) throw new ServerException("이미 마감된 글입니다.", ServerErrorCode.INTERNAL_SERVER);
 		this.state = State.CLOSE;
 	}
 	
 	public void open() {
-		if (this.state == State.OPEN) throw new RecruitException("이미 오픈된 글입니다.");
+		if (this.state == State.OPEN) throw new ServerException("이미 오픈된 글입니다.", ServerErrorCode.INTERNAL_SERVER);
 		this.state = State.OPEN;
 	}
 	

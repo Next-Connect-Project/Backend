@@ -1,9 +1,11 @@
 package com.project.unigram.recruit.service;
 
+import com.project.unigram.recruit.domain.Category;
 import com.project.unigram.recruit.domain.Recruitment;
 import com.project.unigram.recruit.domain.Required;
 import com.project.unigram.recruit.domain.State;
 import com.project.unigram.recruit.dto.RequestRecruitmentDto;
+import com.project.unigram.recruit.exception.RecruitErrorCode;
 import com.project.unigram.recruit.exception.RecruitException;
 import com.project.unigram.recruit.repository.RecruitmentRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +33,7 @@ public class RecruitmentService {
 	public void state(Long recruitId, Long memberId) {
 		Recruitment r = recruitmentRepository.findOne(recruitId);
 		
-		if (!r.isAuthorizedMember(memberId)) throw new RecruitException("해당 글에 수정 권한이 없는 사용자입니다.");
+		if (!r.isAuthorizedMember(memberId)) throw new RecruitException("해당 글에 수정 권한이 없는 사용자입니다.", RecruitErrorCode.NOT_OWNER);
 		
 		if (r.getState() == State.OPEN) r.close();
 		else r.open();
@@ -41,7 +43,7 @@ public class RecruitmentService {
 	public void update(Long recruitId, RequestRecruitmentDto requestRecruitmentDto, Long memberId) {
 		Recruitment r = recruitmentRepository.findOne(recruitId);
 		
-		if (!r.isAuthorizedMember(memberId)) throw new RecruitException("해당 글에 수정 권한이 없는 사용자입니다.");
+		if (!r.isAuthorizedMember(memberId)) throw new RecruitException("해당 글에 수정 권한이 없는 사용자입니다.", RecruitErrorCode.NOT_OWNER);
 		
 		Required required = Required.builder()
 				.contact(requestRecruitmentDto.getContact())
@@ -53,7 +55,7 @@ public class RecruitmentService {
 		
 		List<String> tech = Arrays.stream(requestRecruitmentDto.getTech()).collect(Collectors.toList());
 		
-		r.updateAll(requestRecruitmentDto.getCategory(),
+		r.updateAll(Category.valueOf(requestRecruitmentDto.getCategory()),
 				requestRecruitmentDto.getTitle(),
 				requestRecruitmentDto.getDeadline(),
 				tech,
@@ -66,7 +68,7 @@ public class RecruitmentService {
 	public void delete(Long recruitId, Long memberId) {
 		Recruitment r = recruitmentRepository.findOne(recruitId);
 		
-		if (!r.isAuthorizedMember(memberId)) throw new RecruitException("해당 글에 삭제 권한이 없는 사용자입니다.");
+		if (!r.isAuthorizedMember(memberId)) throw new RecruitException("해당 글에 삭제 권한이 없는 사용자입니다.", RecruitErrorCode.NOT_OWNER);
 		
 		recruitmentRepository.deleteOne(r);
 	}
