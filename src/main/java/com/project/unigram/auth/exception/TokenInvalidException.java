@@ -1,8 +1,9 @@
 package com.project.unigram.auth.exception;
 
 import com.project.unigram.global.dto.ErrorCode;
+import org.springframework.security.access.AccessDeniedException;
 
-public class TokenInvalidException extends RuntimeException {
+public class TokenInvalidException extends AccessDeniedException {
 	
 	private ErrorCode errorCode;
 	
