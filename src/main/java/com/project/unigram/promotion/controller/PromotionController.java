@@ -3,8 +3,10 @@ package com.project.unigram.promotion.controller;
 import com.project.unigram.auth.domain.Member;
 import com.project.unigram.auth.service.MemberService;
 import com.project.unigram.promotion.Response;
+import com.project.unigram.promotion.domain.Promotion;
 import com.project.unigram.promotion.dto.PromotionCreateDto;
 import com.project.unigram.promotion.dto.PromotionDto;
+import com.project.unigram.promotion.paging.Criteria;
 import com.project.unigram.promotion.repository.PromotionRepository;
 import com.project.unigram.promotion.service.PromotionService;
 import io.swagger.annotations.ApiOperation;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController //REST API를 처리하는 controller로 등록 어노테이션
 @RequiredArgsConstructor
@@ -28,9 +31,12 @@ public class PromotionController {
     @ResponseStatus(HttpStatus.OK)
     //정상 실행시 상태코드를 200으로 주는 코드
     @GetMapping("/resources")
-    public Response findAll(){
+    public Response findAll(@RequestParam(value = "page", defaultValue="1") int page,
+                            @RequestParam(value = "limit", defaultValue = "16") int limit
+                            ){
+        Criteria promotionPage = new Criteria(page, limit);
 
-        return new Response(200,"전체 게시물 리턴",promotionService.getPromotions());
+        return new Response(200,"전체 게시물 리턴",promotionService.getPromotions(page, limit));
     }
 
 

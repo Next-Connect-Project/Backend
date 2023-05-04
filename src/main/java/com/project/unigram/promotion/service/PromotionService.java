@@ -31,18 +31,27 @@ public class PromotionService {
 
     //전체 게시물 조회
     @Transactional(readOnly = true)
-    public List<PromotionDto> getPromotions() {
+    public List<PromotionDto> getPromotions(int page, int limit) {
 
         List<Promotion> promotions = promotionRepository.findAll();
         List<PromotionDto> promotionDtos = new ArrayList<>();
         List<PromotionDto> promotionList=new ArrayList<>();
+        int firstPageNum=1, lastPageNum=16;
         if(promotions.size()!=0){
             promotions.forEach(s -> promotionDtos.add(PromotionDto.toDto(s)));
+
+            if(page!=1){
+                lastPageNum=limit*page;
+                firstPageNum=lastPageNum-15;
+                if(promotionDtos.size()<=lastPageNum){
+                    lastPageNum=promotionDtos.size()-1;
+                }
+            }
 
             //최신순 정렬
             Comparator<PromotionDto> comparingDateReverse = Comparator.comparing(PromotionDto::getCreatedAt, Comparator.naturalOrder());
             promotionList = promotionDtos.stream()
-                    .sorted(comparingDateReverse).collect(Collectors.toList());
+                    .sorted(comparingDateReverse).collect(Collectors.toList()).subList(firstPageNum-1, lastPageNum);
         }
 
         return promotionList;
