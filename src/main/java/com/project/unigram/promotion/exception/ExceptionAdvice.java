@@ -15,6 +15,10 @@ public class ExceptionAdvice {
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse illegalArgumentExceptionAdvice(IllegalArgumentException e){
-        return new ErrorResponse(CommonErrorCode.Title_Is_Not_Empty.getCode(), CommonErrorCode.Title_Is_Not_Empty.getMessage());
+        return new ErrorResponse(
+                CommonErrorCode.Title_Or_Content_Is_Not_Empty.getResultCode(),
+                CommonErrorCode.Title_Or_Content_Is_Not_Empty.getErrorCode(),
+                CommonErrorCode.Title_Or_Content_Is_Not_Empty.getErrorMsg()
+        );
     }
 }

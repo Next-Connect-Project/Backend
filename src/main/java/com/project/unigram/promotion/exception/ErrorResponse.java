@@ -7,11 +7,18 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @Builder
 public class ErrorResponse {
-    private final String code;
-    private final String message;
+    //http 상태코드
+    private final String resultCode;
 
-    public ErrorResponse(String code, String message) {
-        this.code = code;
-        this.message = message;
+    //에러코드
+    private final String errorCode;
+
+    //에러메세지
+    private final String errorMsg;
+
+    public ErrorResponse(String resultCode, String errorCode, String errorMsg) {
+        this.resultCode = resultCode;
+        this.errorCode=errorCode;
+        this.errorMsg = errorMsg;
     }
 }

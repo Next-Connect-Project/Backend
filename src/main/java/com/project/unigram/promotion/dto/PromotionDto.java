@@ -2,6 +2,7 @@ package com.project.unigram.promotion.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.unigram.auth.domain.Member;
+import com.project.unigram.auth.service.MemberService;
 import com.project.unigram.promotion.domain.Promotion;
 import lombok.*;
 
@@ -13,6 +14,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @Getter
+@NoArgsConstructor
 public class PromotionDto {
 
     private Long id;
@@ -27,11 +29,14 @@ public class PromotionDto {
     private String name;
     private String abstractContent;
 
+
     //toDto 메서드를 만들어, Promotion 객체만 넣으면 바로 PromotionDto를 만들도록 하였다.
     public static PromotionDto toDto(Promotion promotion){
         String name="";
         if(promotion.getMember()==null){
             name="no name";
+        }else{
+            name=promotion.getMember().getName();
         }
         return new PromotionDto(
                 promotion.getPostId(),

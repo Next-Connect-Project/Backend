@@ -19,11 +19,11 @@ public class Promotion extends BaseTimeEntity {
     private Long postId;
 
     @ManyToOne
-    @JoinColumn(name="member_id")
+    @JoinColumn(name="member_name")
     //단방향 연관관계이며, Member 아이디를 조회하므로 Member 객체 생성
     private Member member;
 
-    @Column(length = 30, nullable = false)
+    @Column(nullable = false)
     private String title; // 글 제목
     @Column(nullable = false)
     private String content; // 글 내용
