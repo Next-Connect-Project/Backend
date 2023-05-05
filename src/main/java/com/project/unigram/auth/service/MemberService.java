@@ -10,11 +10,8 @@ import com.project.unigram.auth.exception.AuthErrorCode;
 import com.project.unigram.auth.repository.MemberRepository;
 import com.project.unigram.auth.security.TokenGenerator;
 import com.project.unigram.global.exception.ServerException;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.json.JSONParser;
-import org.apache.tomcat.util.json.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -60,7 +57,10 @@ public class MemberService {
 	// 멤버 정보 가져오기
 	public Member getMember() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
 		String memberId = authentication.getName();
+		
+		if (memberId.equals("anonymousUser")) return null;
 		
 		return memberRepository.findOne(Long.parseLong(memberId));
 	}
@@ -122,6 +122,7 @@ public class MemberService {
 				                .id(naverMemberDto.getId())
 				                .name(naverMemberDto.getName())
 				                .email(naverMemberDto.getEmail())
+				                .role(Role.NAVER)
 				                .build();
 			
 			return member;

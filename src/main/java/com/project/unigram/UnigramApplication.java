@@ -10,6 +10,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import java.util.Date;
 
 @EnableWebMvc
+@EnableJpaAuditing
 @SpringBootApplication
 @EnableJpaAuditing
 public class UnigramApplication {

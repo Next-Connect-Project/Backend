@@ -1,19 +1,16 @@
-package com.project.unigram.global.exception;
+package com.project.unigram.recruit.exception;
 
 import com.project.unigram.global.dto.ErrorCode;
 
-public enum ValidationErrorCode implements ErrorCode {
+public enum RecruitErrorCode implements ErrorCode {
 	
-	NOT_EMPTY(400, "NOT_EMPTY"),
-	OUT_OF_RANGE(400, "OUT_OF_RANGE"),
-	WRONG_TYPE(400, "WRONG_TYPE"),
-	NOT_PAST(400, "NOT_PAST");
-	
+	NOT_OWNER(400, "NOT_OWNER"),
+	WRONG_ID(400, "WRONG_ID");
 	
 	private int resultCode;
 	private String code;
 	
-	ValidationErrorCode(int resultCode, String code) {
+	RecruitErrorCode(int resultCode, String code) {
 		this.resultCode = resultCode;
 		this.code = code;
 	}
