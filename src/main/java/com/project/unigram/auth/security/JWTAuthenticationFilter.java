@@ -34,12 +34,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 		String token = getJWTFromRequest(request);
 		String uri = request.getRequestURI();
 		
-		try {
-			if (uri.startsWith("/api") && !uri.equals("/api/auth/login/naver") && !StringUtils.hasText(token)) throw new TokenInvalidException("헤더에 토큰을 넣어주세요", AuthErrorCode.NOT_EXISTS);
-		} catch (TokenInvalidException e) {
-			sendError(response, 401, e.getErrorCode(), e.getMessage());
-		}
-		
 		if (StringUtils.hasText(token)) {
 			try {
 				Type type = request.getRequestURI().equals("/api/auth/reissue") ? Type.RTK : Type.ATK;

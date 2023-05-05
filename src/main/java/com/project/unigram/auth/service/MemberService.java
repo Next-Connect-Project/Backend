@@ -10,6 +10,7 @@ import com.project.unigram.auth.exception.AuthErrorCode;
 import com.project.unigram.auth.repository.MemberRepository;
 import com.project.unigram.auth.security.TokenGenerator;
 import com.project.unigram.global.exception.ServerException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,9 +60,9 @@ public class MemberService {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		
 		String memberId = authentication.getName();
-		
+
 		if (memberId.equals("anonymousUser")) return null;
-		
+
 		return memberRepository.findOne(Long.parseLong(memberId));
 	}
 	
