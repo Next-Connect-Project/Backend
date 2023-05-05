@@ -19,7 +19,11 @@ public class PromotionDto {
 
     private Long id;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    @JsonFormat(
+            shape = JsonFormat.Shape.STRING,
+            pattern = "yyyy-MM-dd HH:mm:ss",
+            timezone = "Asia/Seoul"
+    )
     private LocalDateTime createdAt;
 
     private String title;
@@ -30,7 +34,7 @@ public class PromotionDto {
     private String abstractContent;
 
 
-    //toDto 메서드를 만들어, Promotion 객체만 넣으면 바로 PromotionDto를 만들도록 하였다.
+    //toDto 메서드를 만들어, Promotion 객체만 넣으면 바로 PromotionDto를 만들 수 있다.
     public static PromotionDto toDto(Promotion promotion){
         String name="";
         if(promotion.getMember()==null){
