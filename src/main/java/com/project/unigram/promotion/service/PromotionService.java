@@ -41,13 +41,13 @@ public class PromotionService {
             promotions.forEach(s -> promotionDtos.add(PromotionDto.toDto(s)));
 
             //1-16, 17-32 인덱스를 가진 게시글을 보여야 하므로 다음과 같이 페이징 처리를 한다.
-            if(page!=1){
-                lastPageNum=limit*page;
-                firstPageNum=lastPageNum-15;
-                if(promotionDtos.size()<=lastPageNum){
-                    lastPageNum=promotionDtos.size()-1;
-                }
+
+            lastPageNum=limit*page;
+            firstPageNum=lastPageNum-15;
+            if(promotionDtos.size()<=lastPageNum){
+                lastPageNum=promotionDtos.size();
             }
+
 
             //최신순 정렬을 한다.
             Comparator<PromotionDto> comparingDateReverse = Comparator.comparing(PromotionDto::getCreatedAt, Comparator.naturalOrder());
@@ -90,11 +90,15 @@ public class PromotionService {
         Member member= memberService.getMember();
 
         //현재 회원과 게시글 등록 회원이 일치하는지 확인한다.
-        if(promotion.getMember().getId() == member.getId()) {
-            promotion.setTitle(promotionDto.getTitle());
-            promotion.setContent(promotionDto.getContent());
-            promotion.setAbstractContent(promotionDto.getAbstractContent());
-            promotion.setMember(member);
+        try {
+            if (promotion.getMember().getId().equals(member.getId())) {
+                promotion.setTitle(promotionDto.getTitle());
+                promotion.setContent(promotionDto.getContent());
+                promotion.setAbstractContent(promotionDto.getAbstractContent());
+                promotion.setMember(member);
+            }
+        }catch(NullPointerException e){
+
         }
         return PromotionDto.toDto(promotion);
 
@@ -112,10 +116,16 @@ public class PromotionService {
         //게시글 아이디를 작성한 사람과 현재 로그인한 사람이 같으면 삭제처리를 한다.
         Member member = memberService.getMember();
 
-        //회원이 존재한다면 삭제처리한다.
-        if (member!=null) {
-            if (promotion.getMember().getId() == member.getId())
-                promotionRepository.deleteById(id);
+        try{
+            if(member!=null){
+                if (promotion.getMember().getId().equals(member.getId())) {
+                    promotionRepository.deleteById(id);
+                }
+            }
+        }catch(NullPointerException e){
+
         }
+        //회원이 존재한다면 삭제처리한다.
+
     }
 }
