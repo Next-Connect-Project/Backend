@@ -9,7 +9,6 @@ public enum ValidationErrorCode implements ErrorCode {
 	WRONG_TYPE(400, "WRONG_TYPE"),
 	NOT_PAST(400, "NOT_PAST");
 	
-	
 	private int resultCode;
 	private String code;
 	
