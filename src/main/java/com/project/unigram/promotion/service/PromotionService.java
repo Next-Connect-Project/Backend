@@ -36,14 +36,14 @@ public class PromotionService {
         List<Promotion> promotions = promotionRepository.findAll();
         List<PromotionDto> promotionDtos = new ArrayList<>();
         List<PromotionDto> promotionList=new ArrayList<>();
-        int firstPageNum=1, lastPageNum=16;
+        int firstPageNum=1, lastPageNum=limit;
         if(promotions.size()!=0){
             promotions.forEach(s -> promotionDtos.add(PromotionDto.toDto(s)));
 
             //1-16, 17-32 인덱스를 가진 게시글을 보여야 하므로 다음과 같이 페이징 처리를 한다.
 
             lastPageNum=limit*page;
-            firstPageNum=lastPageNum-15;
+            firstPageNum=lastPageNum-(limit-1);
             if(promotionDtos.size()<=lastPageNum){
                 lastPageNum=promotionDtos.size();
             }

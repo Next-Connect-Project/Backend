@@ -5,6 +5,7 @@ import com.project.unigram.auth.service.MemberService;
 import com.project.unigram.promotion.Response;
 import com.project.unigram.promotion.dto.PromotionCreateDto;
 import com.project.unigram.promotion.dto.PromotionDto;
+import com.project.unigram.promotion.exception.PromotionException;
 import com.project.unigram.promotion.paging.Criteria;
 import com.project.unigram.promotion.repository.PromotionRepository;
 import com.project.unigram.promotion.service.PromotionService;
@@ -21,6 +22,7 @@ public class PromotionController {
     private final PromotionService promotionService;
     private final MemberService memberService;
     private final PromotionRepository promotionRepository;
+
 
     //전체 게시글 조회
     @ApiOperation(value="전체 게시글 보기", notes="전체 게시글을 조회한다.")//API 명세서 Swagger에서 타이틀, 설명을 걸어주는 어노테이션
@@ -50,12 +52,19 @@ public class PromotionController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/")
     public Response write(@RequestBody @Valid PromotionCreateDto promotionCreateDto){ //@RequestBody로 JSON파싱
-        if(promotionCreateDto.getTitle()=="" || promotionCreateDto.getTitle()==" "|| promotionCreateDto.getTitle()==null) {
-            throw new IllegalArgumentException();
-        }else if(promotionCreateDto.getContent()=="" || promotionCreateDto.getContent()==" "|| promotionCreateDto.getContent()==null){
-            throw new IllegalArgumentException();
-        }else if(promotionCreateDto.getAbstractContent()=="" || promotionCreateDto.getAbstractContent()==" "|| promotionCreateDto.getAbstractContent()==null){
-            throw new IllegalArgumentException();
+        if(
+            promotionCreateDto.getTitle() == "" ||
+            promotionCreateDto.getTitle() == " "||
+            promotionCreateDto.getTitle() == null ||
+            promotionCreateDto.getContent()=="" ||
+            promotionCreateDto.getContent()==" "||
+            promotionCreateDto.getContent()==null ||
+            promotionCreateDto.getAbstractContent()=="" ||
+            promotionCreateDto.getAbstractContent()==" "||
+            promotionCreateDto.getAbstractContent()==null
+        )
+        {
+            throw new PromotionException("제목 또는 내용이 비어있습니다.");
         }
 
         Member member =memberService.getMember();
