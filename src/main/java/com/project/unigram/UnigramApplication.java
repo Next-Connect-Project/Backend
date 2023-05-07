@@ -12,7 +12,6 @@ import java.util.Date;
 @EnableWebMvc
 @EnableJpaAuditing
 @SpringBootApplication
-@EnableJpaAuditing
 public class UnigramApplication {
 
 	public static void main(String[] args) {
