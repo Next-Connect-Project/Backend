@@ -8,7 +8,7 @@ import com.project.unigram.promotion.dto.PromotionDto;
 import com.project.unigram.promotion.exception.PromotionException;
 import com.project.unigram.promotion.paging.Criteria;
 import com.project.unigram.promotion.repository.PromotionRepository;
-import com.project.unigram.promotion.service.PromotionService;
+import com.project.unigram.promotion.service.PromotionServiceImpl;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping("/api/promotion") //URI 지정 어노테이션
 public class PromotionController {
-    private final PromotionService promotionService;
+    private final PromotionServiceImpl promotionService;
     private final MemberService memberService;
     private final PromotionRepository promotionRepository;
 
