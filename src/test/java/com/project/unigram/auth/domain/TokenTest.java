@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.security.auth.message.AuthException;
 import java.security.Key;
 import java.util.Date;
 
@@ -91,7 +92,7 @@ public class TokenTest {
 		fail("에세스 토큰이 비었으면 에러 발생");
 	}
 	
-	@Test(expected = ServerException.class)
+	@Test(expected = TokenInvalidException.class)
 	public void 에세스_토큰의_서명이_잘못되면_에러() {
 		// given
 		Member member = getMember();
