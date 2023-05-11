@@ -5,6 +5,8 @@ import com.project.unigram.auth.service.MemberService;
 import com.project.unigram.promotion.domain.Promotion;
 import com.project.unigram.promotion.dto.PromotionCreateDto;
 import com.project.unigram.promotion.dto.PromotionDto;
+import com.project.unigram.promotion.exception.CommonErrorCode;
+import com.project.unigram.promotion.exception.PromotionException;
 import com.project.unigram.promotion.repository.PromotionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,8 +76,27 @@ public class PromotionServiceImpl implements PromotionService {
     @Override
     @Transactional
     public PromotionDto write(PromotionCreateDto promotionCreateDto, Member member) {
+        if(
+                promotionCreateDto.getTitle() == "" ||
+                        promotionCreateDto.getTitle() == " "||
+                        promotionCreateDto.getTitle() == null
+        )
+        {
+            throw new PromotionException("제목 또는 내용이 비어있습니다.", CommonErrorCode.Title_Is_Not_Empty);
+        }else if(
+                promotionCreateDto.getContent()=="" ||
+                        promotionCreateDto.getContent()==" "||
+                        promotionCreateDto.getContent()==null
+        ){
+            throw new PromotionException("내용이 비어있습니다.", CommonErrorCode.Content_Is_Not_Empty);
+        }else if(
+                promotionCreateDto.getAbstractContent()=="" ||
+                        promotionCreateDto.getAbstractContent()==" "||
+                        promotionCreateDto.getAbstractContent()==null
+        ) {
+            throw  new PromotionException("요약정보가 비어있습니다", CommonErrorCode.Abstract_Is_Not_Empty);
+        }
         Promotion promotion = new Promotion(member, promotionCreateDto.getTitle(), promotionCreateDto.getContent(), promotionCreateDto.getAbstractContent());
-
         promotionRepository.save(promotion);
         return PromotionDto.toDto(promotion);
 

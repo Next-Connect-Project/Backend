@@ -1,14 +1,14 @@
 package com.project.unigram.promotion.exception;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import com.project.unigram.global.dto.ErrorCode;
 
-@Getter
-public enum CommonErrorCode {
+public enum CommonErrorCode implements ErrorCode {
 
     //PROMOTION
-    Title_Or_Content_Is_Not_Empty(400,"제목 또는 내용이 비어있습니다.");
+    Title_Is_Not_Empty(400,"NO_TITLE"),
+    Content_Is_Not_Empty(400, "NO_CONTENT"),
+
+    Abstract_Is_Not_Empty(400,"NO_ABSTRACT_CONTENT");
 
     private int resultCode; //HttpStatus 상태코드
     private String errorCode; //에러코드
@@ -16,5 +16,15 @@ public enum CommonErrorCode {
     CommonErrorCode(int resultCode, String errorCode) {
         this.resultCode = resultCode;
         this.errorCode = errorCode;
+    }
+
+    @Override
+    public int getResultCode() {
+        return resultCode;
+    }
+
+    @Override
+    public String getCode() {
+        return errorCode;
     }
 }
