@@ -23,7 +23,7 @@ public class PromotionCreateDto {
     private String content;
     private String abstractContent;
 
-    public static PromotionCreateDto toDto(Promotion promotion){
+    public PromotionCreateDto toDto(Promotion promotion){
 
         return new PromotionCreateDto(
                 promotion.getTitle(),
