@@ -73,7 +73,7 @@ public class PromotionController {
     @DeleteMapping("/delete/{postId}")
     public ResponseSuccess delete(@PathVariable("postId") Long postId){
         promotionService.delete(postId);
-        return new ResponseSuccess(200, "글 삭제 성공", null);
+        return new ResponseSuccess(200, "글 삭제 성공", "");
     }
 
 }

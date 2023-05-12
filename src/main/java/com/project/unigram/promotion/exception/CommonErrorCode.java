@@ -7,8 +7,8 @@ public enum CommonErrorCode implements ErrorCode {
     //PROMOTION
     Title_Is_Not_Empty(400,"NO_TITLE"),
     Content_Is_Not_Empty(400, "NO_CONTENT"),
-
-    Abstract_Is_Not_Empty(400,"NO_ABSTRACT_CONTENT");
+    Abstract_Is_Not_Empty(400,"NO_ABSTRACT_CONTENT"),
+    PostId_Is_Not_Valid(400, "NO_POST_ID");
 
     private int resultCode; //HttpStatus 상태코드
     private String errorCode; //에러코드

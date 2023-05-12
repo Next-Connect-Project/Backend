@@ -66,7 +66,7 @@ public class PromotionServiceImpl implements PromotionService {
     @Transactional(readOnly = true)
     public PromotionDto getPromotion(Long id) {
         Promotion promotion = promotionRepository.findById(id).orElseThrow(() -> {
-            return new IllegalArgumentException("Promotion Id를 찾을 수 없습니다.");
+            return new PromotionException("Promotion Id를 찾을 수 없습니다.", CommonErrorCode.PostId_Is_Not_Valid);
         });
         PromotionDto promotionDto = PromotionDto.toDto(promotion);
         return promotionDto;
@@ -82,19 +82,19 @@ public class PromotionServiceImpl implements PromotionService {
                         promotionCreateDto.getTitle() == null
         )
         {
-            throw new PromotionException("제목 또는 내용이 비어있습니다.", CommonErrorCode.Title_Is_Not_Empty);
+            throw new PromotionException("홍보 게시글의 제목이 비어있습니다.", CommonErrorCode.Title_Is_Not_Empty);
         }else if(
                 promotionCreateDto.getContent()=="" ||
                         promotionCreateDto.getContent()==" "||
                         promotionCreateDto.getContent()==null
         ){
-            throw new PromotionException("내용이 비어있습니다.", CommonErrorCode.Content_Is_Not_Empty);
+            throw new PromotionException("홍보 게시글의 내용이 비어있습니다.", CommonErrorCode.Content_Is_Not_Empty);
         }else if(
                 promotionCreateDto.getAbstractContent()=="" ||
                         promotionCreateDto.getAbstractContent()==" "||
                         promotionCreateDto.getAbstractContent()==null
         ) {
-            throw  new PromotionException("요약정보가 비어있습니다", CommonErrorCode.Abstract_Is_Not_Empty);
+            throw  new PromotionException("홍보 게시글의 요약정보가 비어있습니다", CommonErrorCode.Abstract_Is_Not_Empty);
         }
         Promotion promotion = new Promotion(member, promotionCreateDto.getTitle(), promotionCreateDto.getContent(), promotionCreateDto.getAbstractContent());
         promotionRepository.save(promotion);
@@ -107,7 +107,7 @@ public class PromotionServiceImpl implements PromotionService {
     @Transactional
     public PromotionDto update(Long id, PromotionDto promotionDto){
         Promotion promotion=promotionRepository.findById(id).orElseThrow(()->{
-            return new IllegalArgumentException("Board Id를 찾을 수 없습니다");
+            return new PromotionException("Promotion Id를 찾을 수 없습니다", CommonErrorCode.PostId_Is_Not_Valid);
         });
 
         Member member= memberService.getMember();
@@ -134,7 +134,7 @@ public class PromotionServiceImpl implements PromotionService {
     public void delete(Long id) {
         //게시글이 존재하는지 먼저 확인하고 없다면 오류 처리를 한다.
         Promotion promotion = promotionRepository.findById(id).orElseThrow(() -> {
-            return new IllegalArgumentException("Promotion Id를 찾을 수 없습니다.");
+            return new PromotionException("Promotion Id를 찾을 수 없습니다.", CommonErrorCode.PostId_Is_Not_Valid);
         });
 
         //게시글 아이디를 작성한 사람과 현재 로그인한 사람이 같으면 삭제처리를 한다.
