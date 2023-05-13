@@ -61,7 +61,7 @@ public class RecruitmentService {
 				tech,
 				requestRecruitmentDto.getPersonnel(),
 				required,
-				requestRecruitmentDto.getSelected());
+				requestRecruitmentDto.getFree());
 	}
 	
 	@Transactional

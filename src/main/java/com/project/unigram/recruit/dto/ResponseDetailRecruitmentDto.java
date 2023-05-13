@@ -1,7 +1,6 @@
 package com.project.unigram.recruit.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.project.unigram.auth.domain.Member;
 import com.project.unigram.recruit.domain.Category;
 import com.project.unigram.recruit.domain.Personnel;
 import com.project.unigram.recruit.domain.Recruitment;
@@ -36,7 +35,7 @@ public class ResponseDetailRecruitmentDto {
 	
 	private Required required;
 	
-	private String selected;
+	private String free;
 	
 	private boolean owner;
 	
@@ -50,7 +49,7 @@ public class ResponseDetailRecruitmentDto {
 		this.tech = recruitment.getTech().stream().toArray(String[]::new);
 		this.personnel = recruitment.getPersonnel();
 		this.required = recruitment.getRequired();
-		this.selected = recruitment.getSelected();
+		this.free = recruitment.getFree();
 		this.owner = owner;
 	}
 	
