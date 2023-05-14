@@ -22,7 +22,7 @@ public class RequestRecruitmentDto {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
 	private LocalDateTime deadline;
 	
-	@Size(max = 30, message = "OUT_OF_RANGE:tech 배열의 범위가 벗어났습니다. 0 - 20")
+	@Size(max = 26, message = "OUT_OF_RANGE:tech 배열의 범위가 벗어났습니다. 0 - 26")
 	private String[] tech;
 	
 	@Valid

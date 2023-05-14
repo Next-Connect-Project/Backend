@@ -46,6 +46,15 @@ public class RecruitmentRepository {
 			       .fetch();
 	}
 	
+	public Long countRecruitment() {
+		JPAQueryFactory query = new JPAQueryFactory(em);
+		QRecruitment recruitment = QRecruitment.recruitment;
+		
+		return query.select(recruitment.count())
+			       .from(recruitment)
+			       .fetchOne();
+	}
+	
 	private BooleanExpression categoryEq(Category category) {
 		if (category == null) return null;
 		return QRecruitment.recruitment.category.eq(category);

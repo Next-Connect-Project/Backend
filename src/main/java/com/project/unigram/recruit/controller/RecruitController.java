@@ -67,12 +67,14 @@ public class RecruitController {
 	                              @RequestParam(value = "limit", defaultValue = "16") int limit) {
 		RecruitmentSearch recruitmentSearch = new RecruitmentSearch(category, state, page, limit);
 		
+		Long count = recruitmentRepository.countRecruitment();
+		
 		List<Recruitment> recruitments = recruitmentRepository.findRecruitmentWithSearch(recruitmentSearch);
 		List<ResponseSimpleRecruitmentDto> responseDetailRecruitmentDtos = recruitments.stream()
 													.map(ResponseSimpleRecruitmentDto::new)
 													.collect(Collectors.toList());
 		
-		return new ResponseSuccess(200, "모집글 조회에 성공하였습니다.", new ResponseSearchRecruitment(responseDetailRecruitmentDtos));
+		return new ResponseSuccess(200, "모집글 조회에 성공하였습니다.", new ResponseSearchRecruitment(count, responseDetailRecruitmentDtos));
 	}
 	
 	@GetMapping("/detail/{recruitId}")
@@ -119,6 +121,7 @@ public class RecruitController {
 	@Data
 	@AllArgsConstructor
 	static class ResponseSearchRecruitment {
+		Long count;
 		List<ResponseSimpleRecruitmentDto> recruitments;
 	}
 	
