@@ -66,7 +66,7 @@ public class PromotionServiceImpl implements PromotionService {
     @Transactional(readOnly = true)
     public PromotionDto getPromotion(Long id) {
         Promotion promotion = promotionRepository.findById(id).orElseThrow(() -> {
-            return new PromotionException("Promotion Id를 찾을 수 없습니다.", CommonErrorCode.PostId_Is_Not_Valid);
+            throw new PromotionException("Promotion Id를 찾을 수 없습니다.", CommonErrorCode.PostId_Is_Not_Valid);
         });
         PromotionDto promotionDto = PromotionDto.toDto(promotion);
         return promotionDto;
@@ -76,26 +76,7 @@ public class PromotionServiceImpl implements PromotionService {
     @Override
     @Transactional
     public PromotionDto write(PromotionCreateDto promotionCreateDto, Member member) {
-        if(
-                promotionCreateDto.getTitle() == "" ||
-                        promotionCreateDto.getTitle() == " "||
-                        promotionCreateDto.getTitle() == null
-        )
-        {
-            throw new PromotionException("홍보 게시글의 제목이 비어있습니다.", CommonErrorCode.Title_Is_Not_Empty);
-        }else if(
-                promotionCreateDto.getContent()=="" ||
-                        promotionCreateDto.getContent()==" "||
-                        promotionCreateDto.getContent()==null
-        ){
-            throw new PromotionException("홍보 게시글의 내용이 비어있습니다.", CommonErrorCode.Content_Is_Not_Empty);
-        }else if(
-                promotionCreateDto.getAbstractContent()=="" ||
-                        promotionCreateDto.getAbstractContent()==" "||
-                        promotionCreateDto.getAbstractContent()==null
-        ) {
-            throw  new PromotionException("홍보 게시글의 요약정보가 비어있습니다", CommonErrorCode.Abstract_Is_Not_Empty);
-        }
+
         Promotion promotion = new Promotion(member, promotionCreateDto.getTitle(), promotionCreateDto.getContent(), promotionCreateDto.getAbstractContent());
         promotionRepository.save(promotion);
         return PromotionDto.toDto(promotion);
