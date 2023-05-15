@@ -67,7 +67,7 @@ public class RecruitController {
 	                              @RequestParam(value = "limit", defaultValue = "16") int limit) {
 		RecruitmentSearch recruitmentSearch = new RecruitmentSearch(category, state, page, limit);
 		
-		Long count = recruitmentRepository.countRecruitment();
+		Long count = recruitmentRepository.countRecruitmentWithSearch(recruitmentSearch);
 		
 		List<Recruitment> recruitments = recruitmentRepository.findRecruitmentWithSearch(recruitmentSearch);
 		List<ResponseSimpleRecruitmentDto> responseDetailRecruitmentDtos = recruitments.stream()
