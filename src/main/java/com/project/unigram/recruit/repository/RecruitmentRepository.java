@@ -23,6 +23,10 @@ public class RecruitmentRepository {
 		em.persist(recruitment);
 	}
 	
+	public void saveAll(List<Recruitment> recruitments) {
+		for (Recruitment recruitment : recruitments) em.persist(recruitment);
+	}
+	
 	public Recruitment findOne(Long id) {
 		Recruitment recruitment = em.find(Recruitment.class, id);
 		if (recruitment == null) throw new RecruitException("존재하지 않는 모집글 입니다.", RecruitErrorCode.WRONG_ID);
@@ -44,6 +48,16 @@ public class RecruitmentRepository {
 			       .offset(recruitmentSearch.getOffset())
 			       .limit(recruitmentSearch.getLimit())
 			       .fetch();
+	}
+	
+	public Long countRecruitmentWithSearch(RecruitmentSearch recruitmentSearch) {
+		JPAQueryFactory query = new JPAQueryFactory(em);
+		QRecruitment recruitment = QRecruitment.recruitment;
+		
+		return query.select(recruitment.count())
+			       .from(recruitment)
+			       .where(categoryEq(recruitmentSearch.getCategory()), stateEq(recruitmentSearch.getState()))
+			       .fetchOne();
 	}
 	
 	private BooleanExpression categoryEq(Category category) {

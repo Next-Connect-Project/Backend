@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,7 +53,7 @@ public class RecruitController {
 				res.getTech(),
 				res.getPersonnel(),
 				required,
-				res.getSelected());
+				res.getFree());
 		
 		Long id = recruitmentService.post(recruitment);
 		
@@ -60,18 +61,20 @@ public class RecruitController {
 	}
 	
 	@GetMapping("/search")
-	public ResponseSuccess search(@RequestParam(value = "category", required = false) Category category,
-	                              @RequestParam(value = "state", required = false) State state,
+	public ResponseSuccess search(@RequestParam(value = "category", required = false) @Pattern(regexp = "PROJECT|STUDY", message = "WRONG_TYPE:PROJECT 혹은 STUDY로 넣어주세요") Category category,
+	                              @RequestParam(value = "state", required = false) @Pattern(regexp = "OPEN|CLOSE", message = "WRONG_TYPE:OPEN 혹은 CLOSE로 넣어주세요") State state,
 	                              @RequestParam(value = "page", defaultValue = "1") int page,
 	                              @RequestParam(value = "limit", defaultValue = "16") int limit) {
 		RecruitmentSearch recruitmentSearch = new RecruitmentSearch(category, state, page, limit);
+		
+		Long count = recruitmentRepository.countRecruitmentWithSearch(recruitmentSearch);
 		
 		List<Recruitment> recruitments = recruitmentRepository.findRecruitmentWithSearch(recruitmentSearch);
 		List<ResponseSimpleRecruitmentDto> responseDetailRecruitmentDtos = recruitments.stream()
 													.map(ResponseSimpleRecruitmentDto::new)
 													.collect(Collectors.toList());
 		
-		return new ResponseSuccess(200, "모집글 조회에 성공하였습니다.", new ResponseSearchRecruitment(responseDetailRecruitmentDtos));
+		return new ResponseSuccess(200, "모집글 조회에 성공하였습니다.", new ResponseSearchRecruitment(count, responseDetailRecruitmentDtos));
 	}
 	
 	@GetMapping("/detail/{recruitId}")
@@ -118,6 +121,7 @@ public class RecruitController {
 	@Data
 	@AllArgsConstructor
 	static class ResponseSearchRecruitment {
+		Long count;
 		List<ResponseSimpleRecruitmentDto> recruitments;
 	}
 	

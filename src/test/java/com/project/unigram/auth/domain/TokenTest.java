@@ -1,23 +1,20 @@
 package com.project.unigram.auth.domain;
 
 import com.project.unigram.auth.exception.TokenInvalidException;
-import com.project.unigram.global.exception.ServerException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.security.auth.message.AuthException;
 import java.security.Key;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.*;
 
-@RunWith(SpringRunner.class)
+
 @SpringBootTest
 public class TokenTest {
 	
@@ -28,7 +25,7 @@ public class TokenTest {
 	private Long accessExp;
 	private Long refreshExp;
 	
-	@Before
+	@BeforeEach
 	public void 테스트_메서드_실행_전_호출() {
 		byte[] keyBytes = envKey.getBytes();
 		this.key = Keys.hmacShaKeyFor(keyBytes);
@@ -37,7 +34,7 @@ public class TokenTest {
 	}
 	
 	@Test
-	public void 에세스_토큰으로부터_정상적으로_claim_가져옴() {
+	void 에세스_토큰으로부터_정상적으로_claim_가져옴() {
 		// given
 		Member member = getMember();
 		Date accessExp = new Date(System.currentTimeMillis() + this.accessExp);
@@ -51,22 +48,26 @@ public class TokenTest {
 		assertThat(claims).isNotEmpty();
 	}
 	
-	@Test(expected = TokenInvalidException.class)
-	public void 유효하지_않은_에세스_토큰_에러() {
+	@Test
+	@DisplayName("유효하지 않는 에세스 토큰은 TokenInvalidException을 던진다.")
+	void 유효하지_않은_에세스_토큰_에러() {
 		// given
 		Token token = Token.builder()
 		                .accessToken("weired_token")
 						.build();
 		
 		// when
-		Claims claims = token.getClaims(key, Type.ATK);
-		
-		// then
-		fail("유효하지 않은 토큰 에러 발생");
+		assertThatThrownBy(() -> {
+			Claims claims = token.getClaims(key, Type.ATK);
+		})
+				.isExactlyInstanceOf(TokenInvalidException.class)
+				.isInstanceOf(RuntimeException.class)
+				.hasMessage("토큰이 유효하지 않습니다.");
 	}
 	
-	@Test(expected = TokenInvalidException.class)
-	public void 유효_기간이_만료된_에세스_토큰_에러() {
+	@Test
+	@DisplayName("유효 기간이 만료된 토큰은 okenInvalidException을 던진다.")
+	void 유효_기간이_만료된_에세스_토큰_에러() {
 		// given
 		Member member = getMember();
 		Date accessExp = new Date(System.currentTimeMillis());
@@ -74,26 +75,35 @@ public class TokenTest {
 		
 		// when
 		Token token = Token.initToken(member.getId(), Role.NAVER, accessExp, refrehExp, key);
-		Claims claims = token.getClaims(key, Type.ATK);
-	
+		
 		// then
-		fail("에세스 토큰의 기간 만료 에러 발생");
+		assertThatThrownBy(() -> {
+			Claims claims = token.getClaims(key, Type.ATK);
+		})
+				.isExactlyInstanceOf(TokenInvalidException.class)
+				.isInstanceOf(RuntimeException.class) // 부모 클래스 검사
+				.hasMessage("토큰의 유효 기간이 만료되었습니다.");
 	}
 	
-	@Test(expected = TokenInvalidException.class)
-	public void 에세스_토큰이_null_이면_에러() {
+	@Test
+	@DisplayName("에세스 토큰이 null이면 TokenInvalidException을 던진다.")
+	void 에세스_토큰이_null_이면_에러() {
 		// given
 		Token token = Token.builder().build();
 		
 		// when
-		Claims claims = token.getClaims(key, Type.ATK);
-	
+		assertThatThrownBy(() -> {
+			Claims claims = token.getClaims(key, Type.ATK);
+		})
 		// then
-		fail("에세스 토큰이 비었으면 에러 발생");
+				.isExactlyInstanceOf(TokenInvalidException.class)
+				.isInstanceOf(RuntimeException.class)
+				.hasMessage("토큰이 빈 값(null)입니다. 헤더에 토큰을 넣어주세요.");
 	}
 	
-	@Test(expected = TokenInvalidException.class)
-	public void 에세스_토큰의_서명이_잘못되면_에러() {
+	@Test
+	@DisplayName("토큰의 서명이 잘못되면 TokenInvalidException을 던진다.")
+	void 에세스_토큰의_서명이_잘못되면_에러() {
 		// given
 		Member member = getMember();
 		Date accessExp = new Date(System.currentTimeMillis() + this.accessExp);
@@ -102,10 +112,13 @@ public class TokenTest {
 		
 		// when
 		Token token = Token.initToken(member.getId(), Role.NAVER, accessExp, refreshExp, key);
-		Claims claims = token.getClaims(fakeKey, Type.ATK);
-		
+		assertThatThrownBy(() -> {
+			Claims claims = token.getClaims(fakeKey, Type.ATK);
+		})
 		// then
-		fail("서명이 유효하지 않으면 에러 발생");
+				.isExactlyInstanceOf(TokenInvalidException.class)
+				.isInstanceOf(RuntimeException.class)
+				.hasMessage("토큰의 서명이 유효하지 않습니다.");
 	}
 	
 	private Member getMember() {
