@@ -2,7 +2,9 @@ package com.project.unigram.promotion.repository;
 
 import com.project.unigram.promotion.domain.Promotion;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface PromotionRepository extends JpaRepository<Promotion, Long> {
 
 }

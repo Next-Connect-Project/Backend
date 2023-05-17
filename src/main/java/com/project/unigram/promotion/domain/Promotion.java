@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Table(name="promotion")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Promotion extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //dialect 값에 따른 기본 키 자동 생성 전략을 지정한다.
@@ -37,5 +37,12 @@ public class Promotion extends BaseTimeEntity {
         this.abstractContent=abstractContent;
     }
 
+    @Builder(builderMethodName = "promotionBuilder")
+    public Promotion(Long postId, String title, String content, String abstractContent) {
+        this.postId = postId;
+        this.title = title;
+        this.content = content;
+        this.abstractContent = abstractContent;
+    }
 }
 

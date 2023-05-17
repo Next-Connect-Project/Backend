@@ -1,58 +1,105 @@
 package com.project.unigram.promotion.repository;
 
+import com.project.unigram.UnigramApplication;
 import com.project.unigram.auth.domain.Member;
 import com.project.unigram.auth.domain.Role;
 import com.project.unigram.auth.repository.MemberRepository;
+import com.project.unigram.auth.service.MemberService;
 import com.project.unigram.promotion.domain.Promotion;
 import com.project.unigram.promotion.dto.PromotionCreateDto;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import com.project.unigram.promotion.dto.PromotionDto;
+import com.project.unigram.promotion.service.PromotionService;
+import com.project.unigram.promotion.service.PromotionServiceImpl;
+
+import org.assertj.core.api.Assertions;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @SpringBootTest
-@RunWith(SpringRunner.class)
 @Transactional
-class PromotionRepositoryTest {
+public class PromotionRepositoryTest {
+
+    @Autowired
+    PromotionServiceImpl promotionService;
+
+    @Autowired
+    MemberService memberService;
+
     @Autowired
     private PromotionRepository promotionRepository;
 
-    @Autowired
-    MemberRepository memberRepository;
-
-    private PromotionCreateDto promotionCreateDto = new PromotionCreateDto();
-    private Promotion promotion;
-    private Member member;
-
     @DisplayName("게시글 저장 테스트")
-    @Rollback(false)
     @Test
-    public void 게시글_저장_테스트(){
+    public void 게시글_저장_테스트_service코드_이용(){
+
         //given
-//        promotionCreateDto.setTitle("promotion title 1");
-//        promotionCreateDto.setContent("promotion content1");
-//        promotionCreateDto.setAbstractContent("abstract content1");
-//        Member member = new Member(1L, "song", "ghenrhkwk88@naver.com", Role.NAVER);
-//        memberRepository.save(member);
-//
-//        promotion = new Promotion(member, promotion.getTitle(), promotion.getContent(), promotion.getAbstractContent());
-//
-//        //when
-//        Promotion promotion1 = promotionRepository.save(promotion);
-//
-//        //then
-//        assertThat(promotion1).isEqualTo(promotion);
-//        assertThat(promotion1.getTitle()).isEqualTo(promotion.getTitle());
-//        assertThat(promotion1.getContent()).isEqualTo(promotion.getContent());
-//        assertThat(promotion1.getAbstractContent()).isEqualTo(promotion.getAbstractContent());
-//        assertThat(promotion1.getMember()).isEqualTo(promotion.getMember());
-//        assertThat(promotion1.getPostId()).isEqualTo(promotion.getPostId());
+        final PromotionCreateDto promotionCreateDto = new PromotionCreateDto();
+        promotionCreateDto.setTitle("promotion title 1");
+        promotionCreateDto.setContent("promotion content1");
+        promotionCreateDto.setAbstractContent("abstract content1");
+        Member member = new Member(1L, "song", "ghenrhkwk88@naver.com", Role.NAVER);
+
+        Promotion promotion = new Promotion(member, promotionCreateDto.getTitle(), promotionCreateDto.getContent(), promotionCreateDto.getAbstractContent());
+
+        //when
+        PromotionDto promotionDto1 = promotionService.write(promotionCreateDto, member);
+
+        //then
+        assertThat(member.getName()).isEqualTo(promotionDto1.getName());
+        assertThat(promotionCreateDto.getTitle()).isEqualTo(promotionDto1.getTitle());
+        assertThat(promotionCreateDto.getContent()).isEqualTo(promotionDto1.getContent());
+        assertThat(promotionCreateDto.getAbstractContent()).isEqualTo(promotionDto1.getAbstractContent());
+
     }
 
+    @DisplayName("id값과_제목으로_상품확인")
+    @Test
+    void findPromotionById(){
+        //given
+        Member member = new Member(1L, "testname1", "emailtest1", Role.NAVER);
+        Promotion promotion1 = Promotion.promotionBuilder()
+                .postId(1L)
+                .title("title1")
+                .content("content1")
+                .abstractContent("abstractContent1")
+                .build();
+        Promotion promotion2 = Promotion.promotionBuilder()
+                .postId(2L)
+                .title("title2")
+                .content("content2")
+                .abstractContent("abstractContent2")
+                .build();
+        Promotion promotion3 = Promotion.promotionBuilder()
+                .postId(3L)
+                .title("title3")
+                .content("content3")
+                .abstractContent("abstractContent3")
+                .build();
+
+        promotionRepository.saveAll(List.of(promotion1, promotion2, promotion3));
+
+        //when
+        List<Promotion> promotions = promotionRepository.findAll();
+
+        //then
+        Assertions.assertThat(promotions).hasSize(3)
+                .extracting("postId","title")
+                .containsExactlyInAnyOrder(
+                        Tuple.tuple(1L, "title1"),
+                        Tuple.tuple(2L, "title2"),
+                        Tuple.tuple(3L, "title3")
+                );
+    }
 }

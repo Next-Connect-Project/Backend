@@ -8,6 +8,7 @@ import com.project.unigram.promotion.dto.PromotionDto;
 import com.project.unigram.promotion.exception.CommonErrorCode;
 import com.project.unigram.promotion.exception.PromotionException;
 import com.project.unigram.promotion.repository.PromotionRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class PromotionServiceImpl implements PromotionService {
+
     private final PromotionRepository promotionRepository;
     private final MemberService memberService;
 
