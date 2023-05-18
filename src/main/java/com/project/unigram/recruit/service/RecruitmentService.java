@@ -31,7 +31,9 @@ public class RecruitmentService {
 	
 	@Transactional
 	public void state(Long recruitId, Long memberId) {
-		Recruitment r = recruitmentRepository.findOne(recruitId);
+		Recruitment r = recruitmentRepository
+							.findById(recruitId)
+							.orElseThrow(() -> new RecruitException("해당되는 아이디의 게시글이 없습니다.", RecruitErrorCode.WRONG_ID));
 		
 		if (!r.isAuthorizedMember(memberId)) throw new RecruitException("해당 글에 수정 권한이 없는 사용자입니다.", RecruitErrorCode.NOT_OWNER);
 		
@@ -41,7 +43,9 @@ public class RecruitmentService {
 	
 	@Transactional
 	public void update(Long recruitId, RequestRecruitmentDto requestRecruitmentDto, Long memberId) {
-		Recruitment r = recruitmentRepository.findOne(recruitId);
+		Recruitment r = recruitmentRepository
+								.findById(recruitId)
+								.orElseThrow(() -> new RecruitException("해당되는 아이디의 게시글이 없습니다.", RecruitErrorCode.WRONG_ID));
 		
 		if (!r.isAuthorizedMember(memberId)) throw new RecruitException("해당 글에 수정 권한이 없는 사용자입니다.", RecruitErrorCode.NOT_OWNER);
 		
@@ -66,11 +70,13 @@ public class RecruitmentService {
 	
 	@Transactional
 	public void delete(Long recruitId, Long memberId) {
-		Recruitment r = recruitmentRepository.findOne(recruitId);
+		Recruitment r = recruitmentRepository
+							.findById(recruitId)
+							.orElseThrow(() -> new RecruitException("해당되는 아이디의 게시글이 없습니다.", RecruitErrorCode.WRONG_ID));
 		
 		if (!r.isAuthorizedMember(memberId)) throw new RecruitException("해당 글에 삭제 권한이 없는 사용자입니다.", RecruitErrorCode.NOT_OWNER);
 		
-		recruitmentRepository.deleteOne(r);
+		recruitmentRepository.delete(r);
 	}
 	
 }

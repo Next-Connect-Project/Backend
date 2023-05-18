@@ -81,7 +81,9 @@ public class RecruitController {
 	public ResponseSuccess detail(@PathVariable("recruitId") Long recruitId) {
 		Member member = memberService.getMember();
 		
-		Recruitment recruitment = recruitmentRepository.findOne(recruitId);
+		Recruitment recruitment = recruitmentRepository
+										.findById(recruitId)
+			                            .orElseThrow(() -> new RecruitException("해당되는 아이디의 게시글이 없습니다.", RecruitErrorCode.WRONG_ID));
 		
 		boolean owner = false;
 		if (member != null) owner = recruitment.isAuthorizedMember(member.getId());
