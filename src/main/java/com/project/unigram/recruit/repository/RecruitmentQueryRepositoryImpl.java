@@ -11,6 +11,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class RecruitmentQueryRepositoryImpl implements RecruitmentQueryRepository {
@@ -41,6 +43,18 @@ public class RecruitmentQueryRepositoryImpl implements RecruitmentQueryRepositor
 				.from(recruitment)
 				.where(categoryEq(recruitmentSearch.getCategory()), stateEq(recruitmentSearch.getState()))
 				.fetchOne();
+	}
+	
+	@Override
+	public List<Recruitment> findFastDeadlineRecruiment() {
+		JPAQueryFactory query = new JPAQueryFactory(em);
+		QRecruitment recruitment = QRecruitment.recruitment;
+		
+		return query.selectFrom(recruitment)
+			       .where(recruitment.deadline.after(LocalDateTime.now()), recruitment.state.eq(State.OPEN))
+			       .orderBy(recruitment.deadline.asc())
+			       .limit(4)
+			       .fetch();
 	}
 	
 	private BooleanExpression categoryEq(Category category) {

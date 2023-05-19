@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,13 +44,13 @@ class RecruitmentRepositoryTest {
 		
 		for (int i = 0; i < 25; i++) {
 			// category : STUDY state : OPEN
-			Recruitment recruitment1 = Recruitment.create(member, Category.STUDY, null, null, tech, null, null, null);
+			Recruitment recruitment1 = Recruitment.create(member, Category.STUDY, null, LocalDateTime.now().minusDays(i), tech, null, null, null);
 			list.add(recruitment1);
 			// category : PROJECT state : OPEN
-			Recruitment recruitment2 = Recruitment.create(member, Category.PROJECT, null, null, tech, null, null, null);
+			Recruitment recruitment2 = Recruitment.create(member, Category.PROJECT, null, LocalDateTime.now().plusDays(i), tech, null, null, null);
 			list.add(recruitment2);
 			// category : STUDY state : CLOSE
-			Recruitment recruitment3 = Recruitment.create(member, Category.STUDY, null, null, tech, null, null, null);
+			Recruitment recruitment3 = Recruitment.create(member, Category.STUDY, null, LocalDateTime.now().plusDays(i), tech, null, null, null);
 			recruitment3.close();
 			list.add(recruitment3);
 			// category : PROJECT state : CLOSE
@@ -87,6 +88,29 @@ class RecruitmentRepositoryTest {
 		
 		// then
 		assertThat(result).hasSize(9);
+	}
+	
+	@Test
+	@DisplayName("마감 날짜가 지금으로부터 미래이고 오픈된 것 중 빠른 순으로 정렬했을 때 최대 4개만 선택")
+	@Transactional(rollbackFor = Exception.class)
+	void deadlineTest() {
+		// given
+		
+		// when
+		List<Recruitment> result = recruitmentRepository.findFastDeadlineRecruiment();
+		
+		// then
+		assertThat(result)
+				.hasSize(4); // 크기는 4
+		
+		assertThat(result)
+				.extracting(Recruitment::getState)
+				.containsOnly(State.OPEN); // 모두 오픈된 상태
+		
+		assertThat(result)
+				.extracting(Recruitment::getDeadline)
+				.allSatisfy(d -> LocalDateTime.now().isAfter(d))
+				.isSorted(); // 정렬되었는지 확인
 	}
 	
 }

@@ -77,6 +77,17 @@ public class RecruitController {
 		return new ResponseSuccess(200, "모집글 조회에 성공하였습니다.", new ResponseSearchRecruitment(count, responseDetailRecruitmentDtos));
 	}
 	
+	@GetMapping("/main")
+	public ResponseSuccess main() {
+		List<Recruitment> recruitment = recruitmentRepository.findFastDeadlineRecruiment();
+		
+		List<ResponseSimpleRecruitmentDto> responseSimpleRecruitmentDtos = recruitment.stream()
+																				.map(ResponseSimpleRecruitmentDto::new)
+																				.collect(Collectors.toList());
+		
+		return new ResponseSuccess(200, "마감일이 임박한 모집글 조회에 성공하였습니다.", new ResponseMainRecruitment(responseSimpleRecruitmentDtos));
+	}
+	
 	@GetMapping("/detail/{recruitId}")
 	public ResponseSuccess detail(@PathVariable("recruitId") Long recruitId) {
 		Member member = memberService.getMember();
@@ -124,6 +135,12 @@ public class RecruitController {
 	@AllArgsConstructor
 	static class ResponseSearchRecruitment {
 		Long count;
+		List<ResponseSimpleRecruitmentDto> recruitments;
+	}
+	
+	@Data
+	@AllArgsConstructor
+	static class ResponseMainRecruitment {
 		List<ResponseSimpleRecruitmentDto> recruitments;
 	}
 	
