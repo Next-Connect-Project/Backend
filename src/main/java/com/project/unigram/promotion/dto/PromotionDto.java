@@ -3,6 +3,7 @@ package com.project.unigram.promotion.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.unigram.auth.domain.Member;
 import com.project.unigram.auth.service.MemberService;
+import com.project.unigram.promotion.domain.Likes;
 import com.project.unigram.promotion.domain.Promotion;
 import lombok.*;
 
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -32,6 +34,7 @@ public class PromotionDto {
 
     private String name;
     private String abstractContent;
+    private int likeCount;
 
 
     //toDto 메서드를 만들어, Promotion 객체만 넣으면 바로 PromotionDto를 만들 수 있다.
@@ -43,12 +46,13 @@ public class PromotionDto {
             name=promotion.getMember().getName();
         }
         return new PromotionDto(
-                promotion.getPostId(),
+                promotion.getPromotionId(),
                 promotion.getCreatedAt(),
                 promotion.getTitle(),
                 promotion.getContent(),
                 name,
-                promotion.getAbstractContent()
+                promotion.getAbstractContent(),
+                promotion.getLikeCount()
         );
     }
 
