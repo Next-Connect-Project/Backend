@@ -9,7 +9,8 @@ public enum CommonErrorCode implements ErrorCode {
     Content_Is_Not_Empty(400, "NO_CONTENT"),
     Abstract_Is_Not_Empty(400,"NO_ABSTRACT_CONTENT"),
     PostId_Is_Not_Valid(400, "NO_PROMOTION_ID"),
-    No_Member_Id(400, "NO_MEMBER_ID");
+    No_Member_Id(400, "NO_MEMBER_ID"),
+    Like_Is_Empty(400, "NO_LIKE");
 
     private int resultCode; //HttpStatus 상태코드
     private String errorCode; //에러코드

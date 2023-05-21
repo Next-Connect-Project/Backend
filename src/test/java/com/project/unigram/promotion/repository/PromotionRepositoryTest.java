@@ -1,28 +1,21 @@
 package com.project.unigram.promotion.repository;
 
-import com.project.unigram.UnigramApplication;
 import com.project.unigram.auth.domain.Member;
 import com.project.unigram.auth.domain.Role;
-import com.project.unigram.auth.repository.MemberRepository;
 import com.project.unigram.auth.service.MemberService;
 import com.project.unigram.promotion.domain.Promotion;
 import com.project.unigram.promotion.dto.PromotionCreateDto;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.project.unigram.promotion.dto.PromotionDto;
-import com.project.unigram.promotion.service.PromotionService;
 import com.project.unigram.promotion.service.PromotionServiceImpl;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -95,7 +88,7 @@ public class PromotionRepositoryTest {
 
         //then
         Assertions.assertThat(promotions).hasSize(3)
-                .extracting("postId","title")
+                .extracting("promotionId","title")
                 .containsExactlyInAnyOrder(
                         Tuple.tuple(1L, "title1"),
                         Tuple.tuple(2L, "title2"),

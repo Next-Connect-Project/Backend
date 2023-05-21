@@ -46,4 +46,24 @@ public class Likes {
         this.likeCheck = false;
         promotion.setLikeCount(promotion.getLikeCount()-1);
     }
+
+    public Long getLikeId() {
+        return likeId;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public Promotion getPromotion() {
+        return promotion;
+    }
+
+    public boolean isLikeCheck() {
+        return likeCheck;
+    }
+
+    public void setLikeCheck(boolean likeCheck) {
+        this.likeCheck = likeCheck;
+    }
 }
