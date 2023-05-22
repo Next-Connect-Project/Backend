@@ -30,13 +30,19 @@ class RecruitmentRepositoryTest {
 	
 	@BeforeEach
 	void setup() {
-		Member member = Member
+		Member member1 = Member
 				.builder()
 				.id(1L)
 				.role(Role.NAVER)
 				.build();
 		
-		memberRepository.save(member);
+		Member member2 = Member.builder()
+		                       .id(2L)
+		                       .role(Role.NAVER)
+				.build();
+		
+		memberRepository.save(member1);
+		memberRepository.save(member2);
 		
 		String[] tech = new String[]{ "Java", "Spring" };
 		
@@ -44,17 +50,17 @@ class RecruitmentRepositoryTest {
 		
 		for (int i = 0; i < 25; i++) {
 			// category : STUDY state : OPEN
-			Recruitment recruitment1 = Recruitment.create(member, Category.STUDY, null, LocalDateTime.now().minusDays(i), tech, null, null, null);
+			Recruitment recruitment1 = Recruitment.create(member1, Category.STUDY, null, LocalDateTime.now().minusDays(i), tech, null, null, null);
 			list.add(recruitment1);
 			// category : PROJECT state : OPEN
-			Recruitment recruitment2 = Recruitment.create(member, Category.PROJECT, null, LocalDateTime.now().plusDays(i), tech, null, null, null);
+			Recruitment recruitment2 = Recruitment.create(member1, Category.PROJECT, null, LocalDateTime.now().plusDays(i), tech, null, null, null);
 			list.add(recruitment2);
 			// category : STUDY state : CLOSE
-			Recruitment recruitment3 = Recruitment.create(member, Category.STUDY, null, LocalDateTime.now().plusDays(i), tech, null, null, null);
+			Recruitment recruitment3 = Recruitment.create(member2, Category.STUDY, null, LocalDateTime.now().plusDays(i), tech, null, null, null);
 			recruitment3.close();
 			list.add(recruitment3);
 			// category : PROJECT state : CLOSE
-			Recruitment recruitment4 = Recruitment.create(member, Category.PROJECT, null, null, tech, null, null, null);
+			Recruitment recruitment4 = Recruitment.create(member2, Category.PROJECT, null, null, tech, null, null, null);
 			recruitment4.close();
 			list.add(recruitment4);
 		}
@@ -111,6 +117,30 @@ class RecruitmentRepositoryTest {
 				.extracting(Recruitment::getDeadline)
 				.allSatisfy(d -> LocalDateTime.now().isAfter(d))
 				.isSorted(); // 정렬되었는지 확인
+	}
+	
+	@Test
+	@DisplayName("아이디가 1L인 멤버가 쓴 모집글을 작성일 기준으로 정렬")
+	@Transactional(rollbackFor = Exception.class)
+	void memberTest() {
+		// given
+		Member member = Member.builder()
+				                .id(1L)
+				                .role(Role.NAVER)
+								.build();
+		
+		// when
+		List<Recruitment> result = recruitmentRepository.findByMemberOrderByCreatedAtAsc(member);
+		
+		// then
+		assertThat(result)
+				.hasSize(50)
+				.extracting(Recruitment::getMember) // 모든 멤버의 아이디가 1L
+				.allSatisfy(m -> m.getId().equals(1L));
+		
+		assertThat(result)
+				.extracting(Recruitment::getCreatedAt) // 생성일 기준으로 정렬
+				.isSorted();
 	}
 	
 }
