@@ -85,7 +85,20 @@ public class RecruitController {
 																				.map(ResponseSimpleRecruitmentDto::new)
 																				.collect(Collectors.toList());
 		
-		return new ResponseSuccess(200, "마감일이 임박한 모집글 조회에 성공하였습니다.", new ResponseMainRecruitment(responseSimpleRecruitmentDtos));
+		return new ResponseSuccess(200, "마감일이 임박한 모집글 조회에 성공하였습니다.", new ResponseSimpleRecruitmentList(responseSimpleRecruitmentDtos));
+	}
+	
+	@GetMapping("/my")
+	public ResponseSuccess my() {
+		Member member = memberService.getMember();
+		
+		List<Recruitment> recruitment = recruitmentRepository.findByMemberOrderByCreatedAtAsc(member);
+		
+		List<ResponseSimpleRecruitmentDto> responseSimpleRecruitmentDtos = recruitment.stream()
+																					.map(ResponseSimpleRecruitmentDto::new)
+																					.collect(Collectors.toList());
+		
+		return new ResponseSuccess(200, "사용자가 작성한 모집글 조회에 성공했습니다.", new ResponseSimpleRecruitmentList(responseSimpleRecruitmentDtos));
 	}
 	
 	@GetMapping("/detail/{recruitId}")
@@ -140,7 +153,7 @@ public class RecruitController {
 	
 	@Data
 	@AllArgsConstructor
-	static class ResponseMainRecruitment {
+	static class ResponseSimpleRecruitmentList {
 		List<ResponseSimpleRecruitmentDto> recruitments;
 	}
 	
