@@ -77,11 +77,37 @@ public class RecruitController {
 		return new ResponseSuccess(200, "모집글 조회에 성공하였습니다.", new ResponseSearchRecruitment(count, responseDetailRecruitmentDtos));
 	}
 	
+	@GetMapping("/main")
+	public ResponseSuccess main() {
+		List<Recruitment> recruitment = recruitmentRepository.findFastDeadlineRecruiment();
+		
+		List<ResponseSimpleRecruitmentDto> responseSimpleRecruitmentDtos = recruitment.stream()
+																				.map(ResponseSimpleRecruitmentDto::new)
+																				.collect(Collectors.toList());
+		
+		return new ResponseSuccess(200, "마감일이 임박한 모집글 조회에 성공하였습니다.", new ResponseSimpleRecruitmentList(responseSimpleRecruitmentDtos));
+	}
+	
+	@GetMapping("/my")
+	public ResponseSuccess my() {
+		Member member = memberService.getMember();
+		
+		List<Recruitment> recruitment = recruitmentRepository.findByMemberOrderByCreatedAtAsc(member);
+		
+		List<ResponseSimpleRecruitmentDto> responseSimpleRecruitmentDtos = recruitment.stream()
+																					.map(ResponseSimpleRecruitmentDto::new)
+																					.collect(Collectors.toList());
+		
+		return new ResponseSuccess(200, "사용자가 작성한 모집글 조회에 성공했습니다.", new ResponseSimpleRecruitmentList(responseSimpleRecruitmentDtos));
+	}
+	
 	@GetMapping("/detail/{recruitId}")
 	public ResponseSuccess detail(@PathVariable("recruitId") Long recruitId) {
 		Member member = memberService.getMember();
 		
-		Recruitment recruitment = recruitmentRepository.findOne(recruitId);
+		Recruitment recruitment = recruitmentRepository
+										.findById(recruitId)
+			                            .orElseThrow(() -> new RecruitException("해당되는 아이디의 게시글이 없습니다.", RecruitErrorCode.WRONG_ID));
 		
 		boolean owner = false;
 		if (member != null) owner = recruitment.isAuthorizedMember(member.getId());
@@ -122,6 +148,12 @@ public class RecruitController {
 	@AllArgsConstructor
 	static class ResponseSearchRecruitment {
 		Long count;
+		List<ResponseSimpleRecruitmentDto> recruitments;
+	}
+	
+	@Data
+	@AllArgsConstructor
+	static class ResponseSimpleRecruitmentList {
 		List<ResponseSimpleRecruitmentDto> recruitments;
 	}
 	
