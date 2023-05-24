@@ -3,19 +3,18 @@ package com.project.unigram.auth.controller;
 import com.project.unigram.auth.domain.Member;
 import com.project.unigram.auth.domain.Role;
 import com.project.unigram.auth.domain.Token;
-import com.project.unigram.auth.security.TokenGenerator;
 import com.project.unigram.auth.service.MemberService;
 import com.project.unigram.global.dto.ResponseSuccess;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.json.ParseException;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.util.Date;
@@ -32,9 +31,14 @@ public class AuthController {
 			notes = "네이버 서버로부터 사용자의 정보를 조회한다."
 	)
 	@PostMapping("/login/naver")
-	public ResponseSuccess login(@RequestBody @Valid RequestCode requestCode) {
+	public ResponseSuccess login(@RequestBody @Valid RequestCode requestCode, HttpServletResponse res) {
 		String code = requestCode.getCode();
 		Token token = memberService.getToken(code);
+		
+		Cookie cookie = new Cookie("refreshToken", token.getRefreshToken());
+		cookie.setMaxAge(5256000);
+		cookie.setHttpOnly(true);
+		res.addCookie(cookie);
 		
 		return new ResponseSuccess(200, "로그인에 성공했습니다.", new TokenDto(token));
 	}
