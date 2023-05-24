@@ -8,6 +8,7 @@ import com.project.unigram.promotion.domain.Promotion;
 import com.project.unigram.promotion.repository.LikesRepository;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
@@ -30,6 +31,7 @@ public class PromotionDto {
             pattern = "yyyy-MM-dd HH:mm:ss",
             timezone = "Asia/Seoul"
     )
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
 
     private String title;
@@ -37,6 +39,7 @@ public class PromotionDto {
     private String content;
 
     private String name;
+
     private String abstractContent;
     private int likeCount;
     private boolean likeStatus;

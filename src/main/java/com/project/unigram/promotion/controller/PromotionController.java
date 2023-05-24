@@ -37,6 +37,16 @@ public class PromotionController {
         return new ResponseSuccess(200,"전체 게시물 리턴",promotionService.getPromotions(page, limit));
     }
 
+    //게시글 4개만 조회
+    @ApiOperation(value = "현재 날짜로부터 2주 전까지 추천수가 높은 순으로 게시물 리턴", notes = "현재 날짜로부터 2주 전까지 추천수 높은 순으로 게시물을 조회한다.")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/resources/firstPage")
+    public ResponseSuccess findFour(){
+
+        return new ResponseSuccess(200, "현재 날짜로부터 2주 전까지 추천수 높은 순으로 4개 게시물 리턴",promotionService.getFourPromotions());
+    }
+
+
 
     //개별 게시글 조회
     @ApiOperation(value="개별 게시글 보기", notes="개별 게시글을 조회한다")

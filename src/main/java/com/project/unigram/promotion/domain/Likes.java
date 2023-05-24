@@ -27,8 +27,9 @@ public class Likes {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "promotion_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Promotion promotion;
 
     private boolean likeCheck; //true : 좋아요 한 상태, false : 좋아요 안한 상태

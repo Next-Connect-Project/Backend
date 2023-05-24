@@ -35,7 +35,7 @@ public class PromotionServiceImplTest {
         PromotionCreateDto promotionCreateDto = new PromotionCreateDto();
 
         //when
-        promotionService.write(promotionCreateDto.toDto(promotion), memberService.getMember());
+        promotionService.write(promotionCreateDto.toDto(promotion), member);
 
 
         //then

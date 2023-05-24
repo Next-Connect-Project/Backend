@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Getter @Setter
 @Table(name="promotion")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Promotion extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //dialect 값에 따른 기본 키 자동 생성 전략을 지정한다.
