@@ -5,19 +5,23 @@ import com.project.unigram.auth.domain.Member;
 import com.project.unigram.auth.service.MemberService;
 import com.project.unigram.promotion.domain.Likes;
 import com.project.unigram.promotion.domain.Promotion;
+import com.project.unigram.promotion.repository.LikesRepository;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @AllArgsConstructor
 @Getter
 @NoArgsConstructor
 public class PromotionDto {
+
 
     private Long id;
 
@@ -35,16 +39,20 @@ public class PromotionDto {
     private String name;
     private String abstractContent;
     private int likeCount;
-
+    private boolean likeStatus;
 
     //toDto 메서드를 만들어, Promotion 객체만 넣으면 바로 PromotionDto를 만들 수 있다.
-    public static PromotionDto toDto(Promotion promotion){
-        String name="";
-        if(promotion.getMember()==null){
-            name="no name";
-        }else{
-            name=promotion.getMember().getName();
+    public static PromotionDto toDto(Promotion promotion, LikesRepository likesRepository) {
+        String name = "";
+        boolean likeStatus = false;
+        if (promotion.getMember() == null) {
+            name = "no name";
+        } else {
+            Member member = promotion.getMember();
+            name = member.getName();
+            likeStatus = likesRepository.findByMemberAndPromotion(promotion.getMember(), promotion).isLikeCheck();
         }
+
         return new PromotionDto(
                 promotion.getPromotionId(),
                 promotion.getCreatedAt(),
@@ -52,8 +60,8 @@ public class PromotionDto {
                 promotion.getContent(),
                 name,
                 promotion.getAbstractContent(),
-                promotion.getLikeCount()
+                promotion.getLikeCount(),
+                likeStatus
         );
     }
-
 }

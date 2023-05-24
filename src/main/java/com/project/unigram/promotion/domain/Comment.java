@@ -18,7 +18,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "promotion_id")
-    private Promotion promotion;
+    private Promotion promotionC;
 
     @Column(name = "writer")
     private String writer;

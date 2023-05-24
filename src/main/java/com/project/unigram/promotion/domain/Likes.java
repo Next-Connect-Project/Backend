@@ -19,32 +19,33 @@ import javax.persistence.*;
 public class Likes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //dialect 값에 따른 기본 키 자동 생성 전략을 지정한다.
-    @Column(name="like_id", unique = true, nullable = false)
+    @JoinColumn(name="like_id", unique = true, nullable = false)
     private Long likeId;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name="member_id")
+    @ManyToOne
+    @JoinColumn(name="member_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "promotion_id")
     private Promotion promotion;
 
-    @ColumnDefault("false")
-    @Column(name="like_check")
     private boolean likeCheck; //true : 좋아요 한 상태, false : 좋아요 안한 상태
 
     @Builder
     public Likes(Member member, Promotion promotion) {
         this.member = member;
         this.promotion = promotion;
-        this.likeCheck = true;
+        this.likeCheck = false;
     }
 
-    public void unUnliked(Promotion promotion){
-        this.likeCheck = false;
-        promotion.setLikeCount(promotion.getLikeCount()-1);
+    public void liked(Promotion promotion){
+        this.setLikeCheck(true);
+    }
+
+    public void unLiked(Promotion promotion){
+        this.setLikeCheck(false);
     }
 
     public Long getLikeId() {

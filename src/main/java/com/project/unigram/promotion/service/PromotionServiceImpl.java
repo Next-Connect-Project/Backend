@@ -2,11 +2,13 @@ package com.project.unigram.promotion.service;
 
 import com.project.unigram.auth.domain.Member;
 import com.project.unigram.auth.service.MemberService;
+import com.project.unigram.promotion.domain.Likes;
 import com.project.unigram.promotion.domain.Promotion;
 import com.project.unigram.promotion.dto.PromotionCreateDto;
 import com.project.unigram.promotion.dto.PromotionDto;
 import com.project.unigram.promotion.exception.CommonErrorCode;
 import com.project.unigram.promotion.exception.PromotionException;
+import com.project.unigram.promotion.repository.LikesRepository;
 import com.project.unigram.promotion.repository.PromotionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,17 +21,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PromotionServiceImpl implements PromotionService {
 
     private final PromotionRepository promotionRepository;
     private final MemberService memberService;
+    private final LikesRepository likesRepository;
 
-    @Autowired
-    public PromotionServiceImpl(PromotionRepository promotionRepository, MemberService memberService) {
-        this.promotionRepository = promotionRepository;
-        this.memberService=memberService;
-
-    }
 
     //전체 게시물 조회
     @Override
@@ -41,21 +39,18 @@ public class PromotionServiceImpl implements PromotionService {
         List<PromotionDto> promotionList=new ArrayList<>();
         int firstPageNum=1, lastPageNum=16;
         if(promotions.size()!=0){
-            promotions.forEach(s -> promotionDtos.add(PromotionDto.toDto(s)));
+            promotions.forEach(s -> promotionDtos.add(PromotionDto.toDto(s, likesRepository)));
 
             //1-16, 17-32 인덱스를 가진 게시글을 보여야 하므로 다음과 같이 페이징 처리를 한다.
-
             lastPageNum=limit*page;
             firstPageNum=lastPageNum-15;
             if(promotionDtos.size()<=lastPageNum){
                 lastPageNum=promotionDtos.size();
             }
-
-
             //최신순 정렬을 한다.
-            Comparator<PromotionDto> comparingDateReverse = Comparator.comparing(PromotionDto::getCreatedAt, Comparator.naturalOrder());
+//            Comparator<PromotionDto> comparingDateReverse = Comparator.comparing(PromotionDto::getCreatedAt, Comparator.naturalOrder());
             promotionList = promotionDtos.stream()
-                    .sorted(comparingDateReverse)
+                    .sorted(Comparator.comparing(PromotionDto::getCreatedAt))
                     .collect(Collectors.toList())
                     .subList(firstPageNum-1, lastPageNum);
         }
@@ -70,7 +65,7 @@ public class PromotionServiceImpl implements PromotionService {
         Promotion promotion = promotionRepository.findById(id).orElseThrow(() -> {
             throw new PromotionException("Promotion Id를 찾을 수 없습니다.", CommonErrorCode.PostId_Is_Not_Valid);
         });
-        PromotionDto promotionDto = PromotionDto.toDto(promotion);
+        PromotionDto promotionDto = PromotionDto.toDto(promotion, likesRepository);
         return promotionDto;
     }
 
@@ -81,7 +76,8 @@ public class PromotionServiceImpl implements PromotionService {
 
         Promotion promotion = new Promotion(member, promotionCreateDto.getTitle(), promotionCreateDto.getContent(), promotionCreateDto.getAbstractContent());
         promotionRepository.save(promotion);
-        return PromotionDto.toDto(promotion);
+        likesRepository.save(new Likes(promotion.getMember(), promotion));
+        return PromotionDto.toDto(promotion, likesRepository);
 
     }
 
@@ -106,7 +102,7 @@ public class PromotionServiceImpl implements PromotionService {
         }catch(NullPointerException e){
 
         }
-        return PromotionDto.toDto(promotion);
+        return PromotionDto.toDto(promotion, likesRepository);
 
     }
 

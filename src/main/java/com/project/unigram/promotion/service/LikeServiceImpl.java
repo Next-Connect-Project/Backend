@@ -22,10 +22,11 @@ public class LikeServiceImpl implements LikesService {
     private final LikesRepository likesRepository;
     private final MemberRepository memberRepository;
     private final PromotionRepository promotionRepository;
+    private final PromotionService promotionService;
 
     @Transactional
     @Override
-    public void likeUpdate(LikesRequestDto likesRequestDto) {
+    public PromotionDto likeUpdate(LikesRequestDto likesRequestDto) {
         Member member = memberRepository.findOne(likesRequestDto.getMemberId());
         if (member == null) {
             throw new PromotionException("일치하는 사용자 id값이 없습니다", CommonErrorCode.No_Member_Id);
@@ -36,18 +37,16 @@ public class LikeServiceImpl implements LikesService {
 
         Likes likes = likesRepository.findByMemberAndPromotion(member, promotion);
 
-        if(likes == null){
+        if(likes.isLikeCheck()==false){
             //좋아요를 누른적이 없는 사용자인 경우
+            likes.liked(promotion);
             promotion.setLikeCount(promotion.getLikeCount()+1);
-            Likes like = new Likes(member, promotion);
-            likesRepository.save(like);
         }else if(likes.isLikeCheck()==true){
+            likes.unLiked(promotion);
             promotion.setLikeCount(promotion.getLikeCount()-1);
-            likes.setLikeCheck(false);
-        }else if(likes.isLikeCheck() ==false){
-            promotion.setLikeCount(promotion.getLikeCount()+1);
-            likes.setLikeCheck(true);
         }
+
+        return PromotionDto.toDto(promotion, likesRepository);
 
     }
 

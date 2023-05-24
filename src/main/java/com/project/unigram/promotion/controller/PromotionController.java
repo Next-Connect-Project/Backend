@@ -33,7 +33,6 @@ public class PromotionController {
             @RequestParam(value = "page", defaultValue="1") int page,
             @RequestParam(value = "limit", defaultValue = "16") int limit
                             ){
-        Criteria promotionPage = new Criteria(page, limit);
 
         return new ResponseSuccess(200,"전체 게시물 리턴",promotionService.getPromotions(page, limit));
     }
@@ -53,8 +52,8 @@ public class PromotionController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/")
     public ResponseSuccess write(@RequestBody @Valid PromotionCreateDto promotionCreateDto){ //@RequestBody로 JSON파싱
-
-        Member member =memberService.getMember();
+        Member member = memberService.getMember();
+        System.out.println(member);
         return new ResponseSuccess(200, "홍보글 등록에 성공하였습니다.",promotionService.write(promotionCreateDto, member));
     }
 

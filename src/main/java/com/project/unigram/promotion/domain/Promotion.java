@@ -4,8 +4,10 @@ import com.project.unigram.auth.domain.Member;
 import com.project.unigram.global.BaseTimeEntity;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,14 +29,15 @@ public class Promotion extends BaseTimeEntity {
     @Column(nullable = false)
     private String content; // 글 내용
 
-    @Column(nullable= false)
+    @Column(nullable= false, name = "abstract_content")
     private String abstractContent; // 요약 내용
 
-    @Column(name = "like_count", nullable = false)
+    @Column(name = "like_count")
+    @ColumnDefault("0")
     private int likeCount; //추천수
 
-    @OneToMany(mappedBy = "promotion")
-    private List<Comment> comments; //댓글
+//    @OneToMany(mappedBy = "promotionC")
+//    private List<Comment> comments; //댓글
 
     @Builder //생성자와 동일한 역할로, 코드 실행 전에 값을 실을 필드를 명확히 인지할 수 있다.
     public Promotion(Member member, String title, String content, String abstractContent){
@@ -51,5 +54,6 @@ public class Promotion extends BaseTimeEntity {
         this.content = content;
         this.abstractContent = abstractContent;
     }
+
 }
 
