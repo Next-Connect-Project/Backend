@@ -49,8 +49,9 @@ public class Promotion extends BaseTimeEntity {
     }
 
     @Builder(builderMethodName = "promotionBuilder")
-    public Promotion(Long postId, String title, String content, String abstractContent) {
-        this.promotionId = postId;
+    public Promotion(Long promotionId, Member member, String title, String content, String abstractContent) {
+        this.promotionId = promotionId;
+        this.member = member;
         this.title = title;
         this.content = content;
         this.abstractContent = abstractContent;

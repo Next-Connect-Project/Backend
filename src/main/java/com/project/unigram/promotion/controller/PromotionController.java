@@ -3,13 +3,8 @@ package com.project.unigram.promotion.controller;
 import com.project.unigram.auth.domain.Member;
 import com.project.unigram.auth.service.MemberService;
 import com.project.unigram.global.dto.ResponseSuccess;
-import com.project.unigram.promotion.Response;
 import com.project.unigram.promotion.dto.PromotionCreateDto;
-import com.project.unigram.promotion.dto.PromotionDto;
-import com.project.unigram.promotion.exception.CommonErrorCode;
-import com.project.unigram.promotion.exception.PromotionException;
-import com.project.unigram.promotion.paging.Criteria;
-import com.project.unigram.promotion.repository.PromotionRepository;
+import com.project.unigram.promotion.dto.PromotionDetailDto;
 import com.project.unigram.promotion.service.PromotionServiceImpl;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -72,9 +67,9 @@ public class PromotionController {
     @ApiOperation(value="게시글 수정", notes="게시글을 수정한다.")
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/update/{postId}")
-    public ResponseSuccess update(@PathVariable("postId") Long postId, @RequestBody PromotionDto promotionDto){
+    public ResponseSuccess update(@PathVariable("postId") Long postId, @RequestBody PromotionCreateDto promotionCreateDto){
 
-        return new ResponseSuccess(200,"홍보글 수정에 성공하였습니다.", promotionService.update(postId,promotionDto ));
+        return new ResponseSuccess(200,"홍보글 수정에 성공하였습니다.", promotionService.update(postId, promotionCreateDto));
     }
 
     //게시글 삭제

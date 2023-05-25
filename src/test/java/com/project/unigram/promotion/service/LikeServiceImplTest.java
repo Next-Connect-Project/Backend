@@ -5,9 +5,7 @@ import com.project.unigram.auth.domain.Role;
 import com.project.unigram.auth.repository.MemberRepository;
 import com.project.unigram.auth.service.MemberService;
 import com.project.unigram.promotion.domain.Promotion;
-import com.project.unigram.promotion.dto.LikesRequestDto;
-import com.project.unigram.promotion.dto.PromotionCreateDto;
-import com.project.unigram.promotion.dto.PromotionDto;
+import com.project.unigram.promotion.dto.*;
 import com.project.unigram.promotion.exception.CommonErrorCode;
 import com.project.unigram.promotion.exception.PromotionException;
 import com.project.unigram.promotion.repository.LikesRepository;
@@ -20,8 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.project.unigram.promotion.domain.QPromotion.promotion;
-import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
 class LikeServiceImplTest {
@@ -51,9 +47,9 @@ class LikeServiceImplTest {
         PromotionCreateDto promotionCreateDto = new PromotionCreateDto("promotion title1", "promotion content 1", "promotion abstractContent1");
 
         //when
-        PromotionDto promotionDto = promotionService.write(promotionCreateDto, member);
-        likesService.likeUpdate(new LikesRequestDto(member.getId(), promotionDto.getId()));
-        Promotion promotion = promotionRepository.findById(promotionDto.getId())
+        PromotionTotalDto promotionTotalDto = promotionService.write(promotionCreateDto, member);
+        likesService.likeUpdate(new LikesRequestDto(member.getId(), promotionTotalDto.getId()));
+        Promotion promotion = promotionRepository.findById(promotionTotalDto.getId())
                 .orElseThrow(()->new PromotionException("존재하는 홍보 게시글이 없습니다.", CommonErrorCode.PostId_Is_Not_Valid));
 
         //then
@@ -68,14 +64,14 @@ class LikeServiceImplTest {
         PromotionCreateDto promotionCreateDto = new PromotionCreateDto("promotion title1", "promotion content 1", "promotion abstractContent1");
 
         //when
-        PromotionDto promotionDto = promotionService.write(promotionCreateDto, member);
-        likesService.likeUpdate(new LikesRequestDto(member.getId(), promotionDto.getId()));
-        likesService.likeUpdate(new LikesRequestDto(member.getId(), promotionDto.getId()));
-        Promotion promotion = promotionRepository.findById(promotionDto.getId())
+        PromotionTotalDto promotionTotalDto = promotionService.write(promotionCreateDto, member);
+        likesService.likeUpdate(new LikesRequestDto(member.getId(), promotionTotalDto.getId()));
+        likesService.likeUpdate(new LikesRequestDto(member.getId(), promotionTotalDto.getId()));
+        Promotion promotion = promotionRepository.findById(promotionTotalDto.getId())
                 .orElseThrow(()->new PromotionException("존재하는 홍보 게시글이 없습니다.", CommonErrorCode.PostId_Is_Not_Valid));
 
         //then
-        Assertions.assertThat(likesRepository.findByMemberAndPromotion(member, promotion)).isEqualTo(null);
+        Assertions.assertThat(likesRepository.findByMemberAndPromotion(member, promotion).isLikeCheck()).isEqualTo(false);
     }
 
     @Test
@@ -89,14 +85,14 @@ class LikeServiceImplTest {
         PromotionCreateDto promotionCreateDto2 = new PromotionCreateDto("promotion title2","promotion content2", "promotion abstractContent2");
 
         //when
-        PromotionDto promotionDto = promotionService.write(promotionCreateDto, member);
+        PromotionTotalDto promotionTotalDto = promotionService.write(promotionCreateDto, member);
         promotionService.write(promotionCreateDto2, member2);
-        likesService.likeUpdate(new LikesRequestDto(member.getId(), promotionDto.getId()));
+        likesService.likeUpdate(new LikesRequestDto(member.getId(), promotionTotalDto.getId()));
 
         //then
-        List<PromotionDto> promotionDtos = promotionService.getPromotions(1,16);
-        Assertions.assertThat(promotionDtos.get(0).getLikeCount()).isEqualTo(1);
-        Assertions.assertThat(promotionDtos.get(1).getLikeCount()).isEqualTo(0);
+        List<PromotionOverviewDto> promotionOverviewDtos = promotionService.getPromotions(1,16);
+        Assertions.assertThat(promotionOverviewDtos.get(0).getLikeCount()).isEqualTo(1);
+        Assertions.assertThat(promotionOverviewDtos.get(1).getLikeCount()).isEqualTo(0);
 
     }
 }
