@@ -4,7 +4,6 @@ import com.project.unigram.auth.domain.Member;
 import com.project.unigram.global.dto.Period;
 import com.project.unigram.global.exception.ServerErrorCode;
 import com.project.unigram.global.exception.ServerException;
-import com.project.unigram.recruit.exception.RecruitException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -50,7 +49,7 @@ public class Recruitment extends Period {
 	@Embedded
 	private Required required;
 	
-	private String selected;
+	private String free;
 	
 	@Enumerated(EnumType.STRING)
 	private State state;
@@ -62,7 +61,7 @@ public class Recruitment extends Period {
 	                          String[] tech,
 	                          Personnel personnel,
 	                          Required required,
-	                          String selected) {
+	                          String free) {
 		Recruitment recruitment = new Recruitment();
 		
 		recruitment.setMember(member);
@@ -72,7 +71,7 @@ public class Recruitment extends Period {
 		recruitment.tech = Arrays.stream(tech).collect(Collectors.toList());
 		recruitment.personnel = personnel;
 		recruitment.required = required;
-		recruitment.selected = selected;
+		recruitment.free = free;
 		recruitment.state = State.OPEN;
 		
 		return recruitment;
@@ -84,14 +83,14 @@ public class Recruitment extends Period {
 	                      List<String> tech,
 	                      Personnel personnel,
 	                      Required required,
-	                      String selected) {
+	                      String free) {
 		this.category = category;
 		this.title = title;
 		this.deadline = deadline;
 		this.tech = tech;
 		this.personnel = personnel;
 		this.required = required;
-		this.selected = selected;
+		this.free = free;
 	}
 	
 	public void close() {
