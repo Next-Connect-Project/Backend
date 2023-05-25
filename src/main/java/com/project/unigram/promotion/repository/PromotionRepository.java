@@ -1,7 +1,6 @@
 package com.project.unigram.promotion.repository;
 
 import com.project.unigram.promotion.domain.Promotion;
-import com.project.unigram.promotion.dto.PromotionDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

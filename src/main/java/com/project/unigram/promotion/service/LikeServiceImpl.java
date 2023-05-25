@@ -5,7 +5,7 @@ import com.project.unigram.auth.repository.MemberRepository;
 import com.project.unigram.promotion.domain.Likes;
 import com.project.unigram.promotion.domain.Promotion;
 import com.project.unigram.promotion.dto.LikesRequestDto;
-import com.project.unigram.promotion.dto.PromotionDto;
+import com.project.unigram.promotion.dto.PromotionDetailDto;
 import com.project.unigram.promotion.exception.CommonErrorCode;
 import com.project.unigram.promotion.exception.PromotionException;
 import com.project.unigram.promotion.repository.LikesRepository;
@@ -13,8 +13,6 @@ import com.project.unigram.promotion.repository.PromotionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -26,7 +24,7 @@ public class LikeServiceImpl implements LikesService {
 
     @Transactional
     @Override
-    public PromotionDto likeUpdate(LikesRequestDto likesRequestDto) {
+    public PromotionDetailDto likeUpdate(LikesRequestDto likesRequestDto) {
         Member member = memberRepository.findOne(likesRequestDto.getMemberId());
         if (member == null) {
             throw new PromotionException("일치하는 사용자 id값이 없습니다", CommonErrorCode.No_Member_Id);
@@ -46,7 +44,7 @@ public class LikeServiceImpl implements LikesService {
             promotion.setLikeCount(promotion.getLikeCount()-1);
         }
 
-        return PromotionDto.toDto(promotion, likesRepository);
+        return PromotionDetailDto.toDto(promotion, likesRepository);
 
     }
 

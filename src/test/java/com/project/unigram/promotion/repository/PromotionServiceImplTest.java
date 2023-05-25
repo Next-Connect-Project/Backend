@@ -6,7 +6,7 @@ import com.project.unigram.auth.repository.MemberRepository;
 import com.project.unigram.auth.service.MemberService;
 import com.project.unigram.promotion.domain.Promotion;
 import com.project.unigram.promotion.dto.PromotionCreateDto;
-import com.project.unigram.promotion.dto.PromotionDto;
+import com.project.unigram.promotion.dto.PromotionOverviewDto;
 import com.project.unigram.promotion.service.PromotionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +39,9 @@ public class PromotionServiceImplTest {
 
 
         //then
-        List<PromotionDto> promotions = promotionService.getPromotions(1, 16);
-        for (PromotionDto promotionDto : promotions) {
-            System.out.println(promotionDto);
+        List<PromotionOverviewDto> promotions = promotionService.getPromotions(1, 16);
+        for (PromotionOverviewDto promotionOverviewDto : promotions) {
+            System.out.println(promotionOverviewDto);
         }
     }
 }
