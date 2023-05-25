@@ -43,7 +43,7 @@ public class PromotionController {
     @GetMapping("/resources/firstPage")
     public ResponseSuccess findFour(){
 
-        return new ResponseSuccess(200, "현재 날짜로부터 2주 전까지 추천수 높은 순으로 4개 게시물 리턴",promotionService.getFourPromotions());
+        return new ResponseSuccess(200, "홍보글 게시물 4개 불러오기에 성공하였습니다. ",promotionService.getFourPromotions());
     }
 
 
@@ -54,7 +54,7 @@ public class PromotionController {
     @GetMapping("/detail/{postId}")
     public ResponseSuccess getPromotion(@PathVariable("postId") Long postId){
         promotionService.updateView(postId);
-        return new ResponseSuccess(200, "개별 게시물 리턴", promotionService.getPromotion(postId));
+        return new ResponseSuccess(200, "홍보글 상세 게시물 조회에 성공하였습니다.", promotionService.getPromotion(postId));
     }
 
 
@@ -74,7 +74,7 @@ public class PromotionController {
     @PutMapping("/update/{postId}")
     public ResponseSuccess update(@PathVariable("postId") Long postId, @RequestBody PromotionDto promotionDto){
 
-        return new ResponseSuccess(200,"글 수정 성공", promotionService.update(postId,promotionDto ));
+        return new ResponseSuccess(200,"홍보글 수정에 성공하였습니다.", promotionService.update(postId,promotionDto ));
     }
 
     //게시글 삭제
@@ -83,7 +83,7 @@ public class PromotionController {
     @DeleteMapping("/delete/{postId}")
     public ResponseSuccess delete(@PathVariable("postId") Long postId){
         promotionService.delete(postId);
-        return new ResponseSuccess(200, "글 삭제 성공", "");
+        return new ResponseSuccess(200, "홍보글 삭제에 성공하였습니다.", "");
     }
 
 }

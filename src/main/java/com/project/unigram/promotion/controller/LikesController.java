@@ -33,9 +33,9 @@ public class LikesController {
         PromotionDto promotionDto = likesService.likeUpdate(likesRequestDto);
         String message = "";
         if(promotionDto.isLikeStatus()==true){
-            message = "게시물 추천 true 적용";
+            message = "홍보 게시물 추천 true 적용하였습니다.";
         }else{
-            message = "게시물 추천 false 적용";
+            message = "홍보 게시물 추천 false 적용하였습니다.";
         }
 
         return new ResponseSuccess(200, message,promotionDto.isLikeStatus());
