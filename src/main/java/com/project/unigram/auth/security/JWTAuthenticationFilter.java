@@ -18,6 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import javax.print.DocFlavor;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -31,23 +32,32 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-		String token = getJWTFromRequest(request);
+		String accessToken = getJWTFromRequest(request);
+		String refreshToken = null;
+		
 		String uri = request.getRequestURI();
 		
-		if (StringUtils.hasText(token)) {
-			try {
-				Type type = request.getRequestURI().equals("/api/auth/reissue") ? Type.RTK : Type.ATK;
-				
-				Token authToken = null;
-				if (type == Type.ATK) {
-					authToken = Token.builder()
-							.accessToken(token)
-							.build();
-				} else {
-					authToken = Token.builder()
-							.refreshToken(token)
-							.build();
+		Type type = Type.ATK;
+		
+		if (uri.equals("/api/auth/reissue")) {
+			Cookie[] cookies = request.getCookies();
+			
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals("refreshToken")) {
+					refreshToken = cookie.getValue();
+					break;
 				}
+			}
+			
+			type = Type.RTK;
+		}
+		
+		if (StringUtils.hasText(accessToken)) {
+			try {
+				Token authToken = Token.builder()
+					                  .accessToken(accessToken)
+					                  .refreshToken(refreshToken)
+					                  .build();
 				
 				Authentication authentication = tokenGenerator.getAuthentication(authToken, type);
 				SecurityContextHolder.getContext().setAuthentication(authentication);

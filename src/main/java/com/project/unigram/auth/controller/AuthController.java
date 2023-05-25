@@ -8,7 +8,6 @@ import com.project.unigram.global.dto.ResponseSuccess;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.*;
@@ -36,11 +35,21 @@ public class AuthController {
 		Token token = memberService.getToken(code);
 		
 		Cookie cookie = new Cookie("refreshToken", token.getRefreshToken());
-		cookie.setMaxAge(5256000);
-		cookie.setHttpOnly(true);
+		cookie.setMaxAge(5256000); // 유효기간 2달
+		cookie.setHttpOnly(true); // httpOnly로 설정
 		res.addCookie(cookie);
 		
 		return new ResponseSuccess(200, "로그인에 성공했습니다.", new TokenDto(token));
+	}
+	
+	@GetMapping("/logout")
+	public ResponseSuccess logout(HttpServletResponse res) {
+		Cookie cookie = new Cookie("refreshToken", null);
+		cookie.setMaxAge(0);
+		cookie.setHttpOnly(true);
+		res.addCookie(cookie);
+		
+		return new ResponseSuccess(200, "로그아웃에 성공했습니다.", null);
 	}
 	
 	@ApiOperation(
@@ -48,8 +57,13 @@ public class AuthController {
 			notes = "리프레시 토큰을 이용하여 토큰을 재발급 받는다."
 	)
 	@GetMapping("/reissue")
-	public ResponseSuccess reissue() {
+	public ResponseSuccess reissue(HttpServletResponse res) {
 		Token token = memberService.reissueToken();
+		
+		Cookie cookie = new Cookie("refreshToken", token.getRefreshToken());
+		cookie.setMaxAge(5256000); // 유효기간 2달
+		cookie.setHttpOnly(true); // httpOnly로 설정
+		res.addCookie(cookie);
 		
 		return new ResponseSuccess(200, "토큰 재발급에 성공했습니다.", new TokenDto(token));
 	}
@@ -85,14 +99,10 @@ public class AuthController {
 	static class TokenDto {
 		private String accessToken;
 		private Date accessExp;
-		private String refreshToken;
-		private Date refreshExp;
 		
 		public TokenDto(Token t) {
 			this.accessToken = t.getAccessToken();
 			this.accessExp = t.getAccessExp();
-			this.refreshToken = t.getRefreshToken();
-			this.refreshExp = t.getRefreshExp();
 		}
 	}
 	
