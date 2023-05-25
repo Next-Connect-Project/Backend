@@ -77,13 +77,20 @@ public class PromotionServiceImpl implements PromotionService {
 
         List<PromotionDto> promotionDtoList = new ArrayList<>();
         List<PromotionDto> finalPromotionDtos = new ArrayList<>();
+        int size = 0;
         if(promotionList.size() != 0){
             promotionList.forEach(s -> promotionDtoList.add(PromotionDto.toDto(s, likesRepository)));
 
+            if(promotionDtoList.size()<4){
+                size = promotionDtoList.size();
+            }else{
+                size = 4;
+            }
             finalPromotionDtos = promotionDtoList.stream()
                     .sorted(Comparator.comparing(PromotionDto::getLikeCount,Comparator.reverseOrder()))
+                    .sorted(Comparator.comparing(PromotionDto::getCreatedAt, Comparator.reverseOrder()))
                     .collect(Collectors.toList())
-                    .subList(0, 4);
+                    .subList(0, size);
         }
         return finalPromotionDtos;
     }
@@ -95,8 +102,14 @@ public class PromotionServiceImpl implements PromotionService {
         Promotion promotion = promotionRepository.findById(id).orElseThrow(() -> {
             throw new PromotionException("Promotion Id를 찾을 수 없습니다.", CommonErrorCode.PostId_Is_Not_Valid);
         });
+
         PromotionDto promotionDto = PromotionDto.toDto(promotion, likesRepository);
         return promotionDto;
+    }
+
+    @Transactional
+    public int updateView(Long id){
+        return promotionRepository.updateView(id);
     }
 
     //게시물 작성

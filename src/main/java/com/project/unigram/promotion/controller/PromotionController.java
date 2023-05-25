@@ -53,6 +53,7 @@ public class PromotionController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/detail/{postId}")
     public ResponseSuccess getPromotion(@PathVariable("postId") Long postId){
+        promotionService.updateView(postId);
         return new ResponseSuccess(200, "개별 게시물 리턴", promotionService.getPromotion(postId));
     }
 

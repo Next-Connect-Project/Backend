@@ -31,7 +31,13 @@ public class LikesController {
     public ResponseSuccess getPromotion(@Valid @RequestBody LikesRequestDto likesRequestDto){
 
         PromotionDto promotionDto = likesService.likeUpdate(likesRequestDto);
+        String message = "";
+        if(promotionDto.isLikeStatus()==true){
+            message = "게시물 추천 true 적용";
+        }else{
+            message = "게시물 추천 false 적용";
+        }
 
-        return new ResponseSuccess(200, "추천정보 제공",promotionDto);
+        return new ResponseSuccess(200, message,promotionDto.isLikeStatus());
     }
 }

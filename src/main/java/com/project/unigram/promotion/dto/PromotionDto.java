@@ -44,6 +44,8 @@ public class PromotionDto {
     private int likeCount;
     private boolean likeStatus;
 
+    private int view;
+
     //toDto 메서드를 만들어, Promotion 객체만 넣으면 바로 PromotionDto를 만들 수 있다.
     public static PromotionDto toDto(Promotion promotion, LikesRepository likesRepository) {
         String name = "";
@@ -64,7 +66,8 @@ public class PromotionDto {
                 name,
                 promotion.getAbstractContent(),
                 promotion.getLikeCount(),
-                likeStatus
+                likeStatus,
+                promotion.getView()
         );
     }
 }

@@ -36,8 +36,9 @@ public class Promotion extends BaseTimeEntity {
     @ColumnDefault("0")
     private int likeCount; //추천수
 
-//    @OneToMany(mappedBy = "promotionC")
-//    private List<Comment> comments; //댓글
+    @Column(columnDefinition = "integer default 0", nullable = false)
+    private int view; // 조회수
+
 
     @Builder //생성자와 동일한 역할로, 코드 실행 전에 값을 실을 필드를 명확히 인지할 수 있다.
     public Promotion(Member member, String title, String content, String abstractContent){
