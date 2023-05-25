@@ -20,9 +20,11 @@ import java.util.Date;
 public abstract class BaseTimeEntity {
     @CreatedDate //최근 생성날짜 자동 저장
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt; // 글 생성 날짜
 
     @LastModifiedDate // 최근 수정날짜 자동 저장
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime modifiedAt; // 글 수정 날짜
 }
