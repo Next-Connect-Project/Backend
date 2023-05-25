@@ -13,4 +13,5 @@ public interface PromotionService {
     PromotionDto write(PromotionCreateDto promotionCreateDto, Member member);
     PromotionDto update(Long id, PromotionDto promotionDto);
     void delete(Long id);
+    List<PromotionDto> getFourPromotions();
 }

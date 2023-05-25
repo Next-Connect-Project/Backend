@@ -3,9 +3,11 @@ package com.project.unigram.auth.domain;
 import com.project.unigram.auth.exception.TokenInvalidException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -13,7 +15,6 @@ import java.security.Key;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.*;
-
 
 @SpringBootTest
 public class TokenTest {
