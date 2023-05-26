@@ -38,7 +38,7 @@ public class PromotionController {
     @GetMapping("/resources/firstPage")
     public ResponseSuccess findFour(){
 
-        return new ResponseSuccess(200, "홍보글 게시물 4개 불러오기에 성공하였습니다. ",promotionService.getFourPromotions());
+        return new ResponseSuccess(200, "메인 홍보글 불러오기에 성공하였습니다. ",promotionService.getFourPromotions());
     }
 
 
@@ -46,8 +46,8 @@ public class PromotionController {
     //개별 게시글 조회
     @ApiOperation(value="개별 게시글 보기", notes="개별 게시글을 조회한다")
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/detail/{postId}")
-    public ResponseSuccess getPromotion(@PathVariable("postId") Long postId){
+    @GetMapping("/detail/{promotionId}")
+    public ResponseSuccess getPromotion(@PathVariable("promotionId") Long postId){
         promotionService.updateView(postId);
         return new ResponseSuccess(200, "홍보글 상세 게시물 조회에 성공하였습니다.", promotionService.getPromotion(postId));
     }
@@ -56,7 +56,7 @@ public class PromotionController {
     //게시글 작성
     @ApiOperation(value="게시글 작성", notes="게시글을 작성한다.")
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/")
+    @PostMapping("/register")
     public ResponseSuccess write(@RequestBody @Valid PromotionCreateDto promotionCreateDto){ //@RequestBody로 JSON파싱
         Member member = memberService.getMember();
         System.out.println(member);
