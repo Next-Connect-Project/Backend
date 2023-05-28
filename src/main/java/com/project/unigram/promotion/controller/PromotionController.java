@@ -26,10 +26,11 @@ public class PromotionController {
     @GetMapping("/resources")
     public ResponseSuccess findAll(
             @RequestParam(value = "page", defaultValue="1") int page,
-            @RequestParam(value = "limit", defaultValue = "16") int limit
+            @RequestParam(value = "limit", defaultValue = "16") int limit,
+            @RequestParam(value = "sorting") int sorting
                             ){
 
-        return new ResponseSuccess(200,"전체 게시물 리턴",promotionService.getPromotions(page, limit));
+        return new ResponseSuccess(200,"전체 게시물 리턴",promotionService.getPromotions(page, limit, sorting));
     }
 
     //게시글 4개만 조회
