@@ -39,7 +39,7 @@ public class PromotionServiceImplTest {
 
 
         //then
-        List<PromotionOverviewDto> promotions = promotionService.getPromotions(1, 16);
+        List<PromotionOverviewDto> promotions = promotionService.getPromotions(1, 16, 0);
         for (PromotionOverviewDto promotionOverviewDto : promotions) {
             System.out.println(promotionOverviewDto);
         }

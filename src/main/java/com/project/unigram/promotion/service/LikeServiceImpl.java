@@ -35,7 +35,7 @@ public class LikeServiceImpl implements LikesService {
 
         Likes likes = likesRepository.findByMemberAndPromotion(member, promotion);
 
-        if(likes.isLikeCheck()==false){
+        if(likes.isLikeCheck()==false || likes == null){
             //좋아요를 누른적이 없는 사용자인 경우
             likes.liked(promotion);
             promotion.setLikeCount(promotion.getLikeCount()+1);
