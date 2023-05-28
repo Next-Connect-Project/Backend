@@ -86,11 +86,11 @@ class LikeServiceImplTest {
 
         //when
         PromotionTotalDto promotionTotalDto = promotionService.write(promotionCreateDto, member);
-        promotionService.write(promotionCreateDto2, member2);
+        promotionService.write(promotionCreateDto2, member);
         likesService.likeUpdate(new LikesRequestDto(member.getId(), promotionTotalDto.getId()));
 
         //then
-        List<PromotionOverviewDto> promotionOverviewDtos = promotionService.getPromotions(1,16, 0);
+        List<PromotionOverviewDto> promotionOverviewDtos = promotionService.getPromotions(1,16, 1);
         Assertions.assertThat(promotionOverviewDtos.get(0).getLikeCount()).isEqualTo(1);
         Assertions.assertThat(promotionOverviewDtos.get(1).getLikeCount()).isEqualTo(0);
 
