@@ -6,6 +6,7 @@ import com.project.unigram.auth.repository.MemberRepository;
 import com.project.unigram.auth.service.MemberService;
 import com.project.unigram.promotion.domain.Promotion;
 import com.project.unigram.promotion.dto.PromotionCreateDto;
+import com.project.unigram.promotion.dto.PromotionMoreOverviewDto;
 import com.project.unigram.promotion.dto.PromotionOverviewDto;
 import com.project.unigram.promotion.service.PromotionService;
 import org.junit.jupiter.api.Test;
@@ -39,9 +40,10 @@ public class PromotionServiceImplTest {
 
 
         //then
-        List<PromotionOverviewDto> promotions = promotionService.getPromotions(1, 16, 0);
-        for (PromotionOverviewDto promotionOverviewDto : promotions) {
-            System.out.println(promotionOverviewDto);
+        PromotionMoreOverviewDto promotions = promotionService.getPromotions(1, 16, 0);
+        List<PromotionOverviewDto> promotionOverviewDtos = promotions.getPromotionOverviewDtoList();
+        for (PromotionOverviewDto promotionOverviewDto : promotionOverviewDtos) {
+
         }
     }
 }
