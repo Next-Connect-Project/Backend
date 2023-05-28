@@ -10,7 +10,7 @@ import java.util.List;
 
 
 public interface PromotionService {
-    List<PromotionOverviewDto> getPromotions(int page, int limit);
+    List<PromotionOverviewDto> getPromotions(int page, int limit, int sorting);
     PromotionDetailDto getPromotion(Long id);
     PromotionTotalDto write(PromotionCreateDto promotionCreateDto, Member member);
     PromotionOverviewDto update(Long id, PromotionCreateDto promotionCreateDto);
