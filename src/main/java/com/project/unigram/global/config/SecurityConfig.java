@@ -52,7 +52,7 @@ public class SecurityConfig {
 				.authorizeRequests()
 				.antMatchers("/api/auth/login/naver", "/api/auth/logout",
 										"/api/recruit/main", "/api/recruit/search", "/api/recruit/detail/**",
-										"/api/promotion/resources", "/api/promotion/firstPage", "/api/promotion/detail/**")
+										"/api/promotion/resources", "/api/promotion/resources/firstPage", "/api/promotion/detail/**")
 				.permitAll()
 				.anyRequest().authenticated();
 		http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
