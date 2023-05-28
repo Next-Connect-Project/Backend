@@ -58,15 +58,13 @@ public class PromotionServiceImpl implements PromotionService {
             }else if(sorting == 1) {
                 //추천수순 정렬 + 같은 추천수일 경우 오래된 순 정렬
                 promotionList = promotionOverviewDtos.stream()
-                        .sorted(Comparator.comparing(PromotionOverviewDto::getLikeCount))
-                        .sorted(Comparator.comparing(PromotionOverviewDto::getCreatedAt))
+                        .sorted(Comparator.comparing(PromotionOverviewDto::getLikeCount, Comparator.reverseOrder()).thenComparing(PromotionOverviewDto::getCreatedAt))
                         .collect(Collectors.toList())
                         .subList(firstPageNum - 1, lastPageNum);
             }else if(sorting == 2){
                 //추천수순 정렬 + 최신순 정렬
                 promotionList = promotionOverviewDtos.stream()
-                        .sorted(Comparator.comparing(PromotionOverviewDto::getLikeCount))
-                        .sorted(Comparator.comparing(PromotionOverviewDto::getCreatedAt, Comparator.reverseOrder()))
+                        .sorted(Comparator.comparing(PromotionOverviewDto::getLikeCount, Comparator.reverseOrder()).thenComparing(PromotionOverviewDto::getCreatedAt, Comparator.reverseOrder()))
                         .collect(Collectors.toList())
                         .subList(firstPageNum - 1, lastPageNum);
             }
