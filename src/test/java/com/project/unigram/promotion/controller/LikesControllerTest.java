@@ -75,6 +75,14 @@ public class LikesControllerTest {
         Member member = getMember();
         Token token = Token.initToken(member.getId(), Role.NAVER, accessExp, refreshExp, key);
         accessToken = token.getAccessToken();
+
+
+    }
+
+    @DisplayName("액세스토큰 발급 테스트")
+    @Test
+    void check() throws  Exception{
+        System.out.println(accessToken);
     }
 
 //    @DisplayName("추천 true 성공")
