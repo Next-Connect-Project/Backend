@@ -12,13 +12,10 @@ import java.util.Map;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LikesRequestDto {
-    @NotNull //notEmpty = String타입에 쓰이는 어노테이션
-    private Long memberId;
     @NotNull
     private Long promotionId;
 
-    public LikesRequestDto(Long memberId, Long promotionId) {
-        this.memberId = memberId;
+    public LikesRequestDto(Long promotionId) {
         this.promotionId = promotionId;
     }
 

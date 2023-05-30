@@ -48,7 +48,7 @@ class LikeServiceImplTest {
 
         //when
         PromotionTotalDto promotionTotalDto = promotionService.write(promotionCreateDto, member);
-        likesService.likeUpdate(new LikesRequestDto(member.getId(), promotionTotalDto.getId()));
+        likesService.likeUpdate(new LikesRequestDto(promotionTotalDto.getId()));
         Promotion promotion = promotionRepository.findById(promotionTotalDto.getId())
                 .orElseThrow(()->new PromotionException("존재하는 홍보 게시글이 없습니다.", CommonErrorCode.PostId_Is_Not_Valid));
 
@@ -65,8 +65,8 @@ class LikeServiceImplTest {
 
         //when
         PromotionTotalDto promotionTotalDto = promotionService.write(promotionCreateDto, member);
-        likesService.likeUpdate(new LikesRequestDto(member.getId(), promotionTotalDto.getId()));
-        likesService.likeUpdate(new LikesRequestDto(member.getId(), promotionTotalDto.getId()));
+        likesService.likeUpdate(new LikesRequestDto(promotionTotalDto.getId()));
+        likesService.likeUpdate(new LikesRequestDto(promotionTotalDto.getId()));
         Promotion promotion = promotionRepository.findById(promotionTotalDto.getId())
                 .orElseThrow(()->new PromotionException("존재하는 홍보 게시글이 없습니다.", CommonErrorCode.PostId_Is_Not_Valid));
 
@@ -87,7 +87,7 @@ class LikeServiceImplTest {
         //when
         PromotionTotalDto promotionTotalDto = promotionService.write(promotionCreateDto, member);
         promotionService.write(promotionCreateDto2, member);
-        likesService.likeUpdate(new LikesRequestDto(member.getId(), promotionTotalDto.getId()));
+        likesService.likeUpdate(new LikesRequestDto(promotionTotalDto.getId()));
 
         //then
         PromotionMoreOverviewDto promotionOverviewDtos =  promotionService.getPromotions(1,16, 1);
