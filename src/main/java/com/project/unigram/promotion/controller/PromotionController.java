@@ -60,7 +60,6 @@ public class PromotionController {
     @PostMapping("/register")
     public ResponseSuccess write(@RequestBody @Valid PromotionCreateDto promotionCreateDto){ //@RequestBody로 JSON파싱
         Member member = memberService.getMember();
-        System.out.println(member);
         return new ResponseSuccess(200, "홍보글 등록에 성공하였습니다.",promotionService.write(promotionCreateDto, member));
     }
 

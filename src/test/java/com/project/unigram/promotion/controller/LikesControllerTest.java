@@ -75,7 +75,8 @@ public class LikesControllerTest {
         Member member = getMember();
         Token token = Token.initToken(member.getId(), Role.NAVER, accessExp, refreshExp, key);
         accessToken = token.getAccessToken();
-
+        token.createRefreshToken(member.getId(), Role.NAVER, accessExp, key);
+        System.out.println(token.getRefreshToken());
 
     }
 

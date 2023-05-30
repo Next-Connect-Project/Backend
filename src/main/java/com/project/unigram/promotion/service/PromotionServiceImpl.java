@@ -116,8 +116,17 @@ public class PromotionServiceImpl implements PromotionService {
         Promotion promotion = promotionRepository.findById(id).orElseThrow(() -> {
             throw new PromotionException("Promotion Id를 찾을 수 없습니다.", CommonErrorCode.PostId_Is_Not_Valid);
         });
+        Member member = memberService.getMember();
+        boolean owner = false;
+        if(member == null){
+            owner = false;
+        }else{
+            if(member.getId() == promotionRepository.findById(id).get().getMember().getId()){
+                owner = true;
+            }
+        }
 
-        PromotionDetailDto promotionDetailDto = PromotionDetailDto.toDto(promotion, likesRepository);
+        PromotionDetailDto promotionDetailDto = PromotionDetailDto.toDto(promotion, likesRepository, owner);
         return promotionDetailDto;
     }
 
