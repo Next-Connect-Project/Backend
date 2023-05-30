@@ -56,7 +56,6 @@ public class PromotionController {
 
     //게시글 작성
     @ApiOperation(value="게시글 작성", notes="게시글을 작성한다.")
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/register")
     public ResponseSuccess write(@RequestBody @Valid PromotionCreateDto promotionCreateDto){ //@RequestBody로 JSON파싱
         Member member = memberService.getMember();
@@ -65,7 +64,6 @@ public class PromotionController {
 
     //게시글 수정
     @ApiOperation(value="게시글 수정", notes="게시글을 수정한다.")
-    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/update/{postId}")
     public ResponseSuccess update(@PathVariable("postId") Long postId, @RequestBody PromotionCreateDto promotionCreateDto){
 
@@ -74,7 +72,6 @@ public class PromotionController {
 
     //게시글 삭제
     @ApiOperation(value="게시글 삭제", notes="게시글을 삭제한다.")
-    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/delete/{postId}")
     public ResponseSuccess delete(@PathVariable("postId") Long postId){
         promotionService.delete(postId);
