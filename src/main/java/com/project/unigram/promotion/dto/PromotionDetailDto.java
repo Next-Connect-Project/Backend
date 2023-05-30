@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 public class PromotionDetailDto {
 
     private Long id;
+    private boolean owner;
 
     @JsonFormat(
             shape = JsonFormat.Shape.STRING,
@@ -33,7 +34,7 @@ public class PromotionDetailDto {
     private int view;
 
     //toDto 메서드를 만들어, Promotion 객체만 넣으면 바로 PromotionDto를 만들 수 있다.
-    public static PromotionDetailDto toDto(Promotion promotion, LikesRepository likesRepository) {
+    public static PromotionDetailDto toDto(Promotion promotion, LikesRepository likesRepository, boolean owner) {
         String name = "";
         boolean likeStatus = false;
         if (promotion.getMember() == null) {
@@ -46,6 +47,7 @@ public class PromotionDetailDto {
 
         return new PromotionDetailDto(
                 promotion.getPromotionId(),
+                owner,
                 promotion.getCreatedAt(),
                 promotion.getTitle(),
                 promotion.getContent(),
