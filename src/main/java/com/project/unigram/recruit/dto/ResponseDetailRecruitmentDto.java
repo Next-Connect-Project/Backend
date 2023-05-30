@@ -1,10 +1,7 @@
 package com.project.unigram.recruit.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.project.unigram.recruit.domain.Category;
-import com.project.unigram.recruit.domain.Personnel;
-import com.project.unigram.recruit.domain.Recruitment;
-import com.project.unigram.recruit.domain.Required;
+import com.project.unigram.recruit.domain.*;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -35,6 +32,8 @@ public class ResponseDetailRecruitmentDto {
 	
 	private Required required;
 	
+	private State state;
+	
 	private String free;
 	
 	private boolean owner;
@@ -48,6 +47,7 @@ public class ResponseDetailRecruitmentDto {
 		this.deadline = recruitment.getDeadline();
 		this.tech = recruitment.getTech().stream().toArray(String[]::new);
 		this.personnel = recruitment.getPersonnel();
+		this.state = recruitment.getState();
 		this.required = recruitment.getRequired();
 		this.free = recruitment.getFree();
 		this.owner = owner;
