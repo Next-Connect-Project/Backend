@@ -35,6 +35,14 @@ public class LikeServiceImpl implements LikesService {
 
         Likes likes = likesRepository.findByMemberAndPromotion(member, promotion);
 
+        boolean owner = false;
+        if(member.getId() == promotion.getMember().getId()){
+            owner = true;
+        }else{
+            owner = false;
+        }
+
+
         if(likes.isLikeCheck()==false || likes == null){
             //좋아요를 누른적이 없는 사용자인 경우
             likes.liked(promotion);
@@ -44,7 +52,7 @@ public class LikeServiceImpl implements LikesService {
             promotion.setLikeCount(promotion.getLikeCount()-1);
         }
 
-        return PromotionDetailDto.toDto(promotion, likesRepository);
+        return PromotionDetailDto.toDto(promotion, likesRepository, owner);
 
     }
 
