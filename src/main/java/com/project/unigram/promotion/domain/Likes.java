@@ -22,7 +22,7 @@ public class Likes {
     @JoinColumn(name="like_id", unique = true, nullable = false)
     private Long likeId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
