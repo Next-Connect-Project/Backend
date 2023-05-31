@@ -26,10 +26,10 @@ public class LikesController {
     //추천 또는 추천 해제
     @ApiOperation(value="추천 기능", notes="추천 수를 높인다.")
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping("/like")
-    public ResponseSuccess getPromotion(@Valid @RequestBody LikesRequestDto likesRequestDto){
+    @PostMapping("/like/{promotionId}")
+    public ResponseSuccess getPromotion(@Valid @PathVariable("promotionId") Long promotionId){
 
-        PromotionDetailDto promotionDetailDto = likesService.likeUpdate(likesRequestDto);
+        PromotionDetailDto promotionDetailDto = likesService.likeUpdate(promotionId);
         String message = "";
         if(promotionDetailDto.isLikeStatus()==true){
             message = "홍보 게시물 추천 true 적용하였습니다.";
