@@ -5,6 +5,7 @@ import com.project.unigram.auth.service.MemberService;
 import com.project.unigram.global.dto.ResponseSuccess;
 import com.project.unigram.promotion.dto.PromotionCreateDto;
 import com.project.unigram.promotion.dto.PromotionDetailDto;
+import com.project.unigram.promotion.repository.LikesRepository;
 import com.project.unigram.promotion.service.PromotionServiceImpl;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import javax.validation.Valid;
 public class PromotionController {
     private final PromotionServiceImpl promotionService;
     private final MemberService memberService;
+    private final LikesRepository likesRepository;
 
 
     //전체 게시글 조회
