@@ -5,5 +5,5 @@ import com.project.unigram.promotion.dto.PromotionDetailDto;
 
 
 public interface LikesService {
-    PromotionDetailDto likeUpdate(LikesRequestDto likesRequestDto);
+    PromotionDetailDto likeUpdate(Long promotionId);
 }
