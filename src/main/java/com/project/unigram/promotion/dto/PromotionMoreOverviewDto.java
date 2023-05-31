@@ -16,7 +16,6 @@ public class PromotionMoreOverviewDto {
 
     private int count;
     private List<PromotionOverviewDto> promotionOverviewDtoList;
-
     public PromotionMoreOverviewDto(List<PromotionOverviewDto> promotionOverviewDtoList, int count){
         this.count = count;
         this.promotionOverviewDtoList = promotionOverviewDtoList;

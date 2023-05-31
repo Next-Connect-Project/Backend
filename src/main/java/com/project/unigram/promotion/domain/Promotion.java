@@ -22,6 +22,7 @@ public class Promotion extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_id") //단방향 연관관계이며, Member 아이디를 조회하므로 Member 객체를 생성한다.
+
     private Member member;
 
     @Column(nullable = false)

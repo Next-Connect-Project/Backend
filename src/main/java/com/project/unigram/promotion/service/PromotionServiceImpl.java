@@ -121,7 +121,7 @@ public class PromotionServiceImpl implements PromotionService {
         if(member == null){
             owner = false;
         }else{
-            if(member.getId() == promotionRepository.findById(id).get().getMember().getId()){
+            if(member.getId() == promotion.getMember().getId()){
                 owner = true;
             }
         }
