@@ -25,10 +25,10 @@ public class LikeServiceImpl implements LikesService {
 
     @Transactional
     @Override
-    public PromotionDetailDto likeUpdate(LikesRequestDto likesRequestDto) {
+    public PromotionDetailDto likeUpdate(Long promotionId) {
         Member member = memberService.getMember();
 
-        Promotion promotion = promotionRepository.findById(likesRequestDto.getPromotionId())
+        Promotion promotion = promotionRepository.findById(promotionId)
                 .orElseThrow(() -> new PromotionException("일치하는 홍보글 id값이 없습니다.", CommonErrorCode.PostId_Is_Not_Valid));
 
         if (member == null) {
