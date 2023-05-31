@@ -44,7 +44,7 @@ public class PromotionTotalDto {
         } else {
             Member member = promotion.getMember();
             name = member.getName();
-            likeStatus = likesRepository.findByMemberAndPromotion(promotion.getMember(), promotion).isLikeCheck();
+            likeStatus = likesRepository.findByPromotion_PromotionId(promotion.getPromotionId()).isLikeCheck();
         }
 
         return new PromotionTotalDto(

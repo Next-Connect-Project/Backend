@@ -35,7 +35,7 @@ public class LikeServiceImpl implements LikesService {
             throw new PromotionException("일치하는 사용자 id값이 없습니다", CommonErrorCode.No_Member_Id);
         }
 
-        Likes likes = likesRepository.findByMemberAndPromotion(member, promotion);
+        Likes likes = likesRepository.findByPromotion_PromotionId(promotion.getPromotionId());
 
         boolean owner = false;
         if(member.getId() == promotion.getMember().getId()){
