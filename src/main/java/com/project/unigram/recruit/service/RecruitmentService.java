@@ -54,6 +54,7 @@ public class RecruitmentService {
 				.progress(requestRecruitmentDto.getProgress())
 				.duration(requestRecruitmentDto.getDuration())
 				.purpose(requestRecruitmentDto.getPurpose())
+                .way(requestRecruitmentDto.getWay())
 				.timeandplace(requestRecruitmentDto.getTimeandplace())
 				.build();
 		
