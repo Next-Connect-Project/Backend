@@ -3,6 +3,8 @@ package com.project.unigram.promotion.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.unigram.auth.domain.Member;
 import com.project.unigram.promotion.domain.Promotion;
+import com.project.unigram.promotion.exception.CommonErrorCode;
+import com.project.unigram.promotion.exception.PromotionException;
 import com.project.unigram.promotion.repository.LikesRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -42,7 +44,11 @@ public class PromotionOverviewDto {
         } else {
             Member member = promotion.getMember();
             name = member.getName();
-            likeStatus = likesRepository.findByPromotion_PromotionId(promotion.getPromotionId()).isLikeCheck();
+            if(promotion.getPromotionId() == null){
+                throw new PromotionException("해당되는 Promotion Id 값이 없습니다.", CommonErrorCode.PostId_Is_Not_Valid);
+            }else {
+                likeStatus = likesRepository.findByPromotion_PromotionId(promotion.getPromotionId()).isLikeCheck();
+            }
         }
 
         return new PromotionOverviewDto(
