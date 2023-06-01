@@ -155,7 +155,7 @@ public class PromotionServiceImpl implements PromotionService {
             return new PromotionException("Promotion Id를 찾을 수 없습니다", CommonErrorCode.PostId_Is_Not_Valid);
         });
 
-        Member member= memberService.getMember();
+        Member member = memberService.getMember();
 
         //현재 회원과 게시글 등록 회원이 일치하는지 확인한다.
         try {
@@ -164,8 +164,10 @@ public class PromotionServiceImpl implements PromotionService {
                 promotion.setContent(promotionCreateDto.getContent());
                 promotion.setAbstractContent(promotionCreateDto.getAbstractContent());
                 promotion.setMember(member);
+            }else{
+                throw new PromotionException("작성자가 아닙니다",CommonErrorCode.Writer_Is_Not_Equal_To_Member_Name);
             }
-        }catch(NullPointerException e){
+        }catch(Exception e){
 
         }
         return PromotionOverviewDto.toDto(promotion, likesRepository);

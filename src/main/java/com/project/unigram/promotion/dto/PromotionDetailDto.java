@@ -26,6 +26,7 @@ public class PromotionDetailDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
     private String title;
+    private String abstractContent;
     private String content;
     private String name;
     private int likeCount;
@@ -50,6 +51,7 @@ public class PromotionDetailDto {
                 owner,
                 promotion.getCreatedAt(),
                 promotion.getTitle(),
+                promotion.getAbstractContent(),
                 promotion.getContent(),
                 name,
                 promotion.getLikeCount(),
