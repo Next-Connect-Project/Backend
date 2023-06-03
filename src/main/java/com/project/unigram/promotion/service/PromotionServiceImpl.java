@@ -130,6 +130,37 @@ public class PromotionServiceImpl implements PromotionService {
         return promotionDetailDto;
     }
 
+    @Override
+    @Transactional
+    public PromotionMoreOverviewDto getUserPromotions() {
+
+        Member member = memberService.getMember();
+        PromotionMoreOverviewDto promotionMoreOverviewDto;
+
+        if(member == null){
+            throw new PromotionException("사용자 정보가 존재하지 않습니다.", CommonErrorCode.No_Member_Id);
+        }else{
+            List<Promotion> promotions = promotionRepository.findByMember_Id(member.getId());
+            List<PromotionOverviewDto> promotionOverviewDtoList = new ArrayList<>();
+
+            List<PromotionOverviewDto> promotionList=new ArrayList<>();
+
+            if (promotions.size() != 0) {
+                promotions.forEach(s -> promotionOverviewDtoList.add(PromotionOverviewDto.toDto(s, likesRepository)));
+
+                //최신순 정렬
+                promotionList = promotionOverviewDtoList.stream()
+                        .sorted(Comparator.comparing(PromotionOverviewDto::getCreatedAt))
+                        .collect(Collectors.toList());
+            }
+
+            promotionMoreOverviewDto = new PromotionMoreOverviewDto(promotionList, promotionRepository.findAll().size());
+
+        }
+        return promotionMoreOverviewDto;
+
+    }
+
     @Transactional
     public int updateView(Long id){
         return promotionRepository.updateView(id);
