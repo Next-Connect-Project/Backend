@@ -1,6 +1,7 @@
 package com.project.unigram.promotion.repository;
 
 import com.project.unigram.promotion.domain.Promotion;
+import com.project.unigram.promotion.dto.PromotionMoreOverviewDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -16,6 +17,8 @@ public interface PromotionRepository extends JpaRepository<Promotion, Long> {
     @Modifying
     @Query("update Promotion p set p.view = p.view + 1 where p.id = :id")
     int updateView(@Param("id") Long id);
+
+    List<Promotion> findByMember_Id(Long memberId);
 }
 /*CRUD 메서드 자동 생성
 * JpaRepository<Entity 클래스, PK 타입>

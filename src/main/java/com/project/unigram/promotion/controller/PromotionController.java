@@ -11,6 +11,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController //REST API를 처리하는 controller로 등록 어노테이션
@@ -50,9 +54,20 @@ public class PromotionController {
     @ApiOperation(value="개별 게시글 보기", notes="개별 게시글을 조회한다")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/detail/{promotionId}")
-    public ResponseSuccess getPromotion(@PathVariable("promotionId") Long postId){
-        promotionService.updateView(postId);
-        return new ResponseSuccess(200, "홍보글 상세 게시물 조회에 성공하였습니다.", promotionService.getPromotion(postId));
+    public ResponseSuccess getPromotion(
+            @PathVariable("promotionId") Long promotionId,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ){
+        viewCountMethod(promotionId, request, response);
+        return new ResponseSuccess(200, "홍보글 상세 게시물 조회에 성공하였습니다.", promotionService.getPromotion(promotionId));
+    }
+
+    @ApiOperation(value = "사용자가 작성한 홍보글 보기", notes = "사용자가 작성한 홍보글을 조회한다.")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/my")
+    public ResponseSuccess getUserPromotions(){
+        return new ResponseSuccess(200, "사용자가 작성한 홍보글 조회에 성공하였습니다.", promotionService.getUserPromotions());
     }
 
 
@@ -78,6 +93,34 @@ public class PromotionController {
     public ResponseSuccess delete(@PathVariable("postId") Long postId){
         promotionService.delete(postId);
         return new ResponseSuccess(200, "홍보글 삭제에 성공하였습니다.", "");
+    }
+
+    private void viewCountMethod(Long promotionId, HttpServletRequest request, HttpServletResponse response){
+        Cookie oldCookie = null;
+        Cookie[] cookies = request.getCookies();
+        if(cookies != null){
+            for(Cookie cookie : cookies){
+                if(cookie.getName().equals("promotionView")){
+                    oldCookie = cookie;
+                }
+            }
+        }
+
+        if(oldCookie != null){
+            if(!oldCookie.getValue().contains("["+promotionId.toString()+"]")){
+                promotionService.updateView(promotionId);
+                oldCookie.setValue(oldCookie.getValue()+"["+promotionId+"]");
+                oldCookie.setPath("/");
+                oldCookie.setMaxAge(1*1*10);
+                response.addCookie(oldCookie);
+            }
+        }else{
+            promotionService.updateView(promotionId);
+            Cookie newCookie = new Cookie("promotionView", "["+promotionId+"]");
+            newCookie.setPath("/");
+            newCookie.setMaxAge(1*1*10);
+            response.addCookie(newCookie);
+        }
     }
 
 }
