@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -20,10 +21,19 @@ import java.util.Date;
 
 @RestController
 @RequestMapping("/api/auth")
-@RequiredArgsConstructor
 public class AuthController {
 	
-	private final MemberService memberService;
+	private MemberService memberService;
+	private String domain;
+	private int refreshExp;
+	
+	public AuthController(MemberService memberService,
+	                      @Value("${jwt.cookie-domain}") String domain,
+	                      @Value("${jwt.refresh-token-validaity-in-seconds}") int refreshExp) {
+		this.memberService = memberService;
+		this.domain = domain;
+		this.refreshExp = refreshExp;
+	}
 	
 	@ApiOperation(
 			value = "사용자 정보 조회",
@@ -35,7 +45,8 @@ public class AuthController {
 		Token token = memberService.getToken(code);
 		
 		Cookie cookie = new Cookie("refreshToken", token.getRefreshToken());
-		cookie.setMaxAge(5256000); // 유효기간 2달
+		cookie.setDomain(domain);
+		cookie.setMaxAge(refreshExp); // 유효기간 2달
 		cookie.setHttpOnly(true); // httpOnly로 설정
 		res.addCookie(cookie);
 		
@@ -45,6 +56,7 @@ public class AuthController {
 	@GetMapping("/logout")
 	public ResponseSuccess logout(HttpServletResponse res) {
 		Cookie cookie = new Cookie("refreshToken", null);
+		cookie.setDomain(domain);
 		cookie.setMaxAge(0);
 		cookie.setHttpOnly(true);
 		res.addCookie(cookie);
@@ -61,7 +73,8 @@ public class AuthController {
 		Token token = memberService.reissueToken();
 		
 		Cookie cookie = new Cookie("refreshToken", token.getRefreshToken());
-		cookie.setMaxAge(5256000); // 유효기간 2달
+		cookie.setDomain(domain);
+		cookie.setMaxAge(refreshExp); // 유효기간 2달
 		cookie.setHttpOnly(true); // httpOnly로 설정
 		res.addCookie(cookie);
 		
