@@ -111,14 +111,14 @@ public class PromotionController {
                 promotionService.updateView(promotionId);
                 oldCookie.setValue(oldCookie.getValue()+"["+promotionId+"]");
                 oldCookie.setPath("/");
-                oldCookie.setMaxAge(60*60*24);
+                oldCookie.setMaxAge(1*1*10);
                 response.addCookie(oldCookie);
             }
         }else{
             promotionService.updateView(promotionId);
             Cookie newCookie = new Cookie("promotionView", "["+promotionId+"]");
             newCookie.setPath("/");
-            newCookie.setMaxAge(2*60);
+            newCookie.setMaxAge(1*1*10);
             response.addCookie(newCookie);
         }
     }
