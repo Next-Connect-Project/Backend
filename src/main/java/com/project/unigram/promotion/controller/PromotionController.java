@@ -63,6 +63,13 @@ public class PromotionController {
         return new ResponseSuccess(200, "홍보글 상세 게시물 조회에 성공하였습니다.", promotionService.getPromotion(promotionId));
     }
 
+    @ApiOperation(value = "사용자가 작성한 홍보글 보기", notes = "사용자가 작성한 홍보글을 조회한다.")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/my")
+    public ResponseSuccess getUserPromotions(){
+        return new ResponseSuccess(200, "사용자가 작성한 홍보글 조회에 성공하였습니다.", promotionService.getUserPromotions());
+    }
+
 
     //게시글 작성
     @ApiOperation(value="게시글 작성", notes="게시글을 작성한다.")
