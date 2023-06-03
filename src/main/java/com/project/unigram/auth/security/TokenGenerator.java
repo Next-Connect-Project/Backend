@@ -33,13 +33,13 @@ public class TokenGenerator {
 	
 	// yml 파일에서 가져오기
 	public TokenGenerator(@Value("${jwt.secret}") String key,
-	                      @Value("${jwt.access-token-validaity-in-seconds}") String accessExp,
-	                      @Value("${jwt.refresh-token-validaity-in-seconds}") String refreshExp) {
+	                      @Value("${jwt.access-token-validaity-in-seconds}") long accessExp,
+	                      @Value("${jwt.refresh-token-validaity-in-seconds}") long refreshExp) {
 		byte[] keyBytes = key.getBytes();
 		this.key = Keys.hmacShaKeyFor(keyBytes);
 		// 생성할 때부터 만들면 안됨!! 과거의 시간을 가지고 있는 것임..
-		this.accessExp = Long.parseLong(accessExp);
-		this.refreshExp = Long.parseLong(refreshExp);
+		this.accessExp = accessExp * 100;
+		this.refreshExp = refreshExp * 100;
 	}
 	
 	// 토큰 생성하기
