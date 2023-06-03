@@ -47,6 +47,7 @@ public class AuthController {
 		Cookie cookie = new Cookie("refreshToken", token.getRefreshToken());
 		cookie.setDomain(domain);
 		cookie.setMaxAge(refreshExp); // 유효기간 2달
+		cookie.setPath("/"); // 모든 경로에서 쿠키 set
 		cookie.setHttpOnly(true); // httpOnly로 설정
 		res.addCookie(cookie);
 		
@@ -58,6 +59,7 @@ public class AuthController {
 		Cookie cookie = new Cookie("refreshToken", null);
 		cookie.setDomain(domain);
 		cookie.setMaxAge(0);
+		cookie.setPath("/"); // 모든 경로에서 쿠키 set
 		cookie.setHttpOnly(true);
 		res.addCookie(cookie);
 		
@@ -75,6 +77,7 @@ public class AuthController {
 		Cookie cookie = new Cookie("refreshToken", token.getRefreshToken());
 		cookie.setDomain(domain);
 		cookie.setMaxAge(refreshExp); // 유효기간 2달
+		cookie.setPath("/"); // 모든 경로에서 쿠키 set
 		cookie.setHttpOnly(true); // httpOnly로 설정
 		res.addCookie(cookie);
 		
