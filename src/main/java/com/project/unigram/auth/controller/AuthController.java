@@ -11,9 +11,11 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -40,24 +42,33 @@ public class AuthController {
 			notes = "네이버 서버로부터 사용자의 정보를 조회한다."
 	)
 	@PostMapping("/login/naver")
-	public ResponseSuccess login(@RequestBody @Valid RequestCode requestCode, HttpServletResponse res) {
+	public ResponseSuccess login(@RequestBody @Valid RequestCode requestCode, HttpServletRequest req, HttpServletResponse res) {
 		String code = requestCode.getCode();
 		Token token = memberService.getToken(code);
 		
 		Cookie cookie = new Cookie("refreshToken", token.getRefreshToken());
-		cookie.setDomain(domain);
 		cookie.setMaxAge(refreshExp); // 유효기간 2달
 		cookie.setPath("/"); // 모든 경로에서 쿠키 set
 		cookie.setHttpOnly(true); // httpOnly로 설정
 		res.addCookie(cookie);
 		
-		return new ResponseSuccess(200, "로그인에 성공했습니다.", new TokenDto(token));
+		return new ResponseSuccess(200, "로그인에 성공했습니다.", new TokenDto(token, req.getRequestURL()));
+	}
+	
+	@GetMapping("/cookie")
+	public ResponseSuccess cookie(HttpServletRequest req, HttpServletResponse res){
+		Cookie cookie = new Cookie("cookie", "thisiscookie");
+		cookie.setMaxAge(1000);
+		cookie.setPath("/");
+		cookie.setHttpOnly(true);
+		res.addCookie(cookie);
+		
+		return new ResponseSuccess(200, "쿠키 저장에 성공했습니다.", req.getRequestURL().toString());
 	}
 	
 	@GetMapping("/logout")
 	public ResponseSuccess logout(HttpServletResponse res) {
 		Cookie cookie = new Cookie("refreshToken", null);
-		cookie.setDomain(domain);
 		cookie.setMaxAge(0);
 		cookie.setPath("/"); // 모든 경로에서 쿠키 set
 		cookie.setHttpOnly(true);
@@ -75,13 +86,12 @@ public class AuthController {
 		Token token = memberService.reissueToken();
 		
 		Cookie cookie = new Cookie("refreshToken", token.getRefreshToken());
-		cookie.setDomain(domain);
-		cookie.setMaxAge(refreshExp); // 유효기간 2달
+		cookie.setMaxAge(refreshExp);
 		cookie.setPath("/"); // 모든 경로에서 쿠키 set
-		cookie.setHttpOnly(true); // httpOnly로 설정
+		cookie.setHttpOnly(true);
 		res.addCookie(cookie);
 		
-		return new ResponseSuccess(200, "토큰 재발급에 성공했습니다.", new TokenDto(token));
+		return new ResponseSuccess(200, "토큰 재발급에 성공했습니다.", new TokenDto(token, null));
 	}
 	
 	@ApiOperation(
@@ -115,10 +125,12 @@ public class AuthController {
 	static class TokenDto {
 		private String accessToken;
 		private Date accessExp;
+		private String domain;
 		
-		public TokenDto(Token t) {
+		public TokenDto(Token t, StringBuffer domain) {
 			this.accessToken = t.getAccessToken();
 			this.accessExp = t.getAccessExp();
+			this.domain = domain.toString();
 		}
 	}
 	
