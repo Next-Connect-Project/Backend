@@ -8,62 +8,34 @@ import com.project.unigram.global.dto.ResponseSuccess;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
 	
-	private MemberService memberService;
-	private String domain;
-	private int refreshExp;
-	
-	public AuthController(MemberService memberService,
-	                      @Value("${jwt.cookie-domain}") String domain,
-	                      @Value("${jwt.refresh-token-validaity-in-seconds}") int refreshExp) {
-		this.memberService = memberService;
-		this.domain = domain;
-		this.refreshExp = refreshExp;
-	}
+	private final MemberService memberService;
 	
 	@ApiOperation(
 			value = "사용자 정보 조회",
 			notes = "네이버 서버로부터 사용자의 정보를 조회한다."
 	)
 	@PostMapping("/login/naver")
-	public ResponseSuccess login(@RequestBody @Valid RequestCode requestCode, HttpServletRequest req, HttpServletResponse res) {
+	public ResponseSuccess login(@RequestBody @Valid RequestCode requestCode) {
 		String code = requestCode.getCode();
 		Token token = memberService.getToken(code);
 		
-		Cookie cookie = new Cookie("refreshToken", token.getRefreshToken());
-		cookie.setMaxAge(refreshExp); // 유효기간 2달
-		cookie.setPath("/"); // 모든 경로에서 쿠키 set
-		cookie.setHttpOnly(true); // httpOnly로 설정
-		res.addCookie(cookie);
-		
-		return new ResponseSuccess(200, "로그인에 성공했습니다.", new TokenDto(token, req.getRequestURL()));
-	}
-	
-	@GetMapping("/cookie")
-	public ResponseSuccess cookie(HttpServletRequest req, HttpServletResponse res){
-		Cookie cookie = new Cookie("cookie", "thisiscookie");
-		cookie.setMaxAge(1000);
-		cookie.setPath("/");
-		cookie.setHttpOnly(true);
-		res.addCookie(cookie);
-		
-		return new ResponseSuccess(200, "쿠키 저장에 성공했습니다.", req.getRequestURL().toString());
+		return new ResponseSuccess(200, "로그인에 성공했습니다.", new TokenDto(token));
 	}
 	
 	@GetMapping("/logout")
@@ -82,16 +54,10 @@ public class AuthController {
 			notes = "리프레시 토큰을 이용하여 토큰을 재발급 받는다."
 	)
 	@GetMapping("/reissue")
-	public ResponseSuccess reissue(HttpServletResponse res) {
-		Token token = memberService.reissueToken();
+	public ResponseSuccess reissue(@RequestBody @Valid RequestRefreshToken requestRefreshToken) {
+		Token token = memberService.reissueToken(requestRefreshToken.getRefreshToken());
 		
-		Cookie cookie = new Cookie("refreshToken", token.getRefreshToken());
-		cookie.setMaxAge(refreshExp);
-		cookie.setPath("/"); // 모든 경로에서 쿠키 set
-		cookie.setHttpOnly(true);
-		res.addCookie(cookie);
-		
-		return new ResponseSuccess(200, "토큰 재발급에 성공했습니다.", new TokenDto(token, null));
+		return new ResponseSuccess(200, "토큰 재발급에 성공했습니다.", new TokenDto(token));
 	}
 	
 	@ApiOperation(
@@ -114,6 +80,12 @@ public class AuthController {
 	}
 	
 	@Data
+	static class RequestRefreshToken {
+		@NotEmpty(message = "NOT_EMPTY:리프레시 토큰을 바디에 넣어주세요.")
+		private String refreshToken;
+	}
+	
+	@Data
 	@AllArgsConstructor
 	static class MemberDto {
 		private String email;
@@ -125,12 +97,14 @@ public class AuthController {
 	static class TokenDto {
 		private String accessToken;
 		private Date accessExp;
-		private String domain;
+		private String refreshToken;
+		private Date refreshExp;
 		
-		public TokenDto(Token t, StringBuffer domain) {
+		public TokenDto(Token t) {
 			this.accessToken = t.getAccessToken();
 			this.accessExp = t.getAccessExp();
-			this.domain = domain.toString();
+			this.refreshToken = t.getRefreshToken();
+			this.refreshExp = t.getRefreshExp();
 		}
 	}
 	

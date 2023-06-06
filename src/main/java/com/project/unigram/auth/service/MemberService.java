@@ -3,6 +3,7 @@ package com.project.unigram.auth.service;
 import com.project.unigram.auth.domain.Member;
 import com.project.unigram.auth.domain.Role;
 import com.project.unigram.auth.domain.Token;
+import com.project.unigram.auth.domain.Type;
 import com.project.unigram.auth.dto.NaverAccessTokenDto;
 import com.project.unigram.auth.dto.NaverMemberDto;
 import com.project.unigram.auth.dto.ResponseNaver;
@@ -49,8 +50,16 @@ public class MemberService {
 	}
 	
 	// 요청 들어올 때마다 항상 재발급
-	public Token reissueToken() {
-		Member member = getMember();
+	public Token reissueToken(String refreshToken) {
+		Token token = Token.builder()
+			              .refreshToken(refreshToken)
+			              .build();
+		
+		Authentication authentication = tokenGenerator.getAuthentication(token, Type.RTK);
+		
+		String memberId = authentication.getName();
+		
+		Member member = memberRepository.findOne(Long.parseLong(memberId));
 		
 		return generateToken(member.getId(), member.getRole());
 	}
