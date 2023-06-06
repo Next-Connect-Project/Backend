@@ -39,20 +39,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 		
 		Type type = Type.ATK;
 		
-		if (uri.equals("/api/auth/reissue")) {
-			Cookie[] cookies = request.getCookies();
-			
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals("refreshToken")) {
-					refreshToken = cookie.getValue();
-					break;
-				}
-			}
-			
-			type = Type.RTK;
-		}
-		
-		if (StringUtils.hasText(accessToken)) {
+		if (StringUtils.hasText(accessToken) && !uri.equals("/api/auth/reissue")) {
 			try {
 				Token authToken = Token.builder()
 					                  .accessToken(accessToken)
