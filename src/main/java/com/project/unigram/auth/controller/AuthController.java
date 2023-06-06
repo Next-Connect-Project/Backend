@@ -53,7 +53,7 @@ public class AuthController {
 			value = "토큰 재발급",
 			notes = "리프레시 토큰을 이용하여 토큰을 재발급 받는다."
 	)
-	@GetMapping("/reissue")
+	@PostMapping("/reissue")
 	public ResponseSuccess reissue(@RequestBody @Valid RequestRefreshToken requestRefreshToken) {
 		Token token = memberService.reissueToken(requestRefreshToken.getRefreshToken());
 		
