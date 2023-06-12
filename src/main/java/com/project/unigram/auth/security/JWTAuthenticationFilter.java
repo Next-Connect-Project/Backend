@@ -37,7 +37,11 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 		
 		String uri = request.getRequestURI();
 		
+		System.out.println(uri);
+		
 		Type type = Type.ATK;
+		
+		if (!StringUtils.hasText(accessToken) && uri.equals("/api/auth/reissue")) sendError(response, 401, AuthErrorCode.NOT_EXISTS, "헤더에 에세스 토큰을 넣어주세요.");
 		
 		if (StringUtils.hasText(accessToken) && !uri.equals("/api/auth/reissue")) {
 			try {

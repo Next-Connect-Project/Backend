@@ -50,7 +50,7 @@ public class SecurityConfig {
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()
 				.authorizeRequests()
-				.antMatchers("/api/auth/login/naver", "/api/auth/logout",
+				.antMatchers("/api/auth/login/naver", "/api/auth/logout", "/api/auth/reissue",
 										"/api/recruit/main", "/api/recruit/search", "/api/recruit/detail/**",
 										"/api/promotion/resources", "/api/promotion/resources/firstPage", "/api/promotion/detail/**")
 				.permitAll()
