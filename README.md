@@ -50,7 +50,15 @@
 ### Collaboration tool
 <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=Git&logoColor=white"> <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white"> <img src="https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white"> <img src="https://img.shields.io/badge/GitHub-4A154B?style=for-the-badge&logo=GitHub&logoColor=white">
 
-</br>
+
+
+### ERD modeling
+
+<img src = "https://github.com/songhee1/algorithm-study/assets/96781855/d99df16b-4d15-4690-a767-9b6ba1cea64c" width = "auto" height = "800px"> 
+
+
+<br>
+<br>
 
 ## ⚒️ 프로젝트 주요 기능
 
